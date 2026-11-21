@@ -126,5 +126,11 @@
   "Music is ready. Try something!": "Music is ready. Try something!",
   "Video is ready. Try something!": "Video is ready. Try something!",
   "The rest keeps downloading underneath.": "The rest keeps downloading underneath.",
-  "Pick something to make first": "Pick something to make first"
+  "Pick something to make first": "Pick something to make first",
+  "Runs here": "Runs here",
+  "Needs adjustment": "Needs adjustment",
+  "Not available here": "Not available here",
+  "Some models need different hardware or a newer engine. See the warnings.": "Some models need different hardware or a newer engine. See the warnings.",
+  "Try a smaller version on this machine": "Try a smaller version on this machine",
+  "This model can't run here yet": "This model can't run here yet"
 }

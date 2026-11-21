@@ -479,7 +479,7 @@ private slots:
         write(state + "/list.json", QJsonDocument(QJsonArray{
             QJsonObject{{"id", "klein"}, {"kind", "image"}, {"name", "FLUX.2 Klein 4B"}, {"vendor", "bfl"}, {"available", true}, {"best", true}, {"memory_gib", 11}, {"download_gib", 8.3}},
             QJsonObject{{"id", "ace"}, {"kind", "music"}, {"name", "ACE-Step"}, {"vendor", "ace-step"}, {"available", true}, {"memory_gib", 8}, {"download_gib", 7.57}},
-            QJsonObject{{"id", "h3"}, {"kind", "video"}, {"name", "MiniMax H3"}, {"available", false}, {"memory_gib", 38}, {"download_gib", 22.64}}}).toJson());
+            QJsonObject{{"id", "h3"}, {"kind", "video"}, {"name", "MiniMax H3"}, {"available", false}, {"reason", "needs 38 GiB GPU-addressable memory, this GPU has 10"}, {"download_gib", 22.64}}}).toJson());
         const auto status = [&](const QJsonObject &models) {
             write(state + "/status.json", QJsonDocument(QJsonObject{{"models", models}}).toJson());
         };
@@ -491,12 +491,20 @@ private slots:
 
         Models models(state, state + "/key", command);
         QVERIFY(models.settingUp());
-        QCOMPARE(models.offers().size(), 2);
+        // Every model is shown: the ones that run first, then the ones that don't, with a warning.
+        QCOMPARE(models.offers().size(), 3);
         const QVariantMap image = models.offers().at(0).toMap();
         QCOMPARE(image.value("kind").toString(), QString("image"));
         QCOMPARE(image.value("phase").toString(), QString("offer"));
+        QCOMPARE(image.value("fit").toString(), QString("fits"));
         QCOMPARE(image.value("downloadBytes").toLongLong(), qint64(8.3 * 1024 * 1024 * 1024));
         QCOMPARE(models.offers().at(1).toMap().value("kind").toString(), QString("music"));
+        const QVariantMap video = models.offers().at(2).toMap();
+        QCOMPARE(video.value("kind").toString(), QString("video"));
+        QCOMPARE(video.value("phase").toString(), QString("unavailable"));
+        QCOMPARE(video.value("fit").toString(), QString("adjust"));
+        QCOMPARE(video.value("reason").toString(), QString("needs 38 GiB GPU-addressable memory, this GPU has 10"));
+        QCOMPARE(video.value("downloadBytes").toLongLong(), qint64(22.64 * 1024 * 1024 * 1024));
 
         // Only an offer downloads, through the engine.
         models.download("h3");
@@ -527,6 +535,23 @@ private slots:
         // Opened with something set up, it's no first run.
         Models later(state, state + "/key", command);
         QVERIFY(!later.settingUp());
+    }
+
+    void aModelTheRuntimeCantRunIsShownAsUnavailableNotAnAdjustment() {
+        QTemporaryDir dir;
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/list.json", QJsonDocument(QJsonArray{
+            QJsonObject{{"id", "flux"}, {"kind", "image"}, {"name", "FLUX.2 Klein"}, {"available", false},
+                        {"reason", "runtime sdcpp-cuda can't run on nvidia-rtx3080"}, {"download_gib", 8.3}},
+            QJsonObject{{"id", "ace"}, {"kind", "music"}, {"name", "ACE-Step"}, {"available", false},
+                        {"reason", "needs 9 GiB GPU-addressable memory, this GPU has 8"}, {"download_gib", 7.57}}}).toJson());
+        write(state + "/status.json", QJsonDocument(QJsonObject{{"models", QJsonObject{}}}).toJson());
+        Models models(state, state + "/key", "/bin/true");
+        QCOMPARE(models.offers().size(), 2);
+        QCOMPARE(models.offers().at(0).toMap().value("fit").toString(), QString("unavailable"));
+        QCOMPARE(models.offers().at(0).toMap().value("phase").toString(), QString("unavailable"));
+        QCOMPARE(models.offers().at(1).toMap().value("fit").toString(), QString("adjust"));
     }
 
     void modelsFollowTheEngineFiles() {

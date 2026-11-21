@@ -210,44 +210,68 @@ Models::Discovery Models::discover(const QJsonObject &status, const QJsonArray &
     return found;
 }
 
+// How a model relates to this machine, for the warning on its card. A memory shortfall can
+// often be worked around with a smaller quant, resolution or context; an unsupported runtime
+// or an unmeasured machine can't be fixed by the user.
+static QString offerFit(bool available, const QString &reason) {
+    if (available)
+        return "fits";
+    if (reason.contains("memory", Qt::CaseInsensitive))
+        return "adjust";
+    return "unavailable";
+}
+
 QVariantList Models::offersFrom(const QJsonObject &status, const QJsonArray &list) {
     const QJsonObject models = status.value("models").toObject();
     QVariantList offers;
     for (const QString kind : {"image", "music", "video"}) {
         QList<QJsonObject> rows;
-        for (const QJsonValue &value : list)
-            if (value.toObject().value("kind").toString() == kind && value.toObject().value("available").toBool())
-                rows << value.toObject();
+        for (const QJsonValue &value : list) {
+            const QJsonObject row = value.toObject();
+            if (row.value("kind").toString() == kind)
+                rows << row;
+        }
         if (rows.isEmpty())
             continue;
-        // The engine's pick for its kind first.
+        // What runs here comes first, then the engine's pick for its kind.
         std::stable_sort(rows.begin(), rows.end(), [](const QJsonObject &a, const QJsonObject &b) {
-            return a.value("best").toBool() && !b.value("best").toBool();
+            if (a.value("available").toBool() != b.value("available").toBool())
+                return a.value("available").toBool();
+            if (a.value("best").toBool() != b.value("best").toBool())
+                return a.value("best").toBool();
+            return a.value("name").toString() < b.value("name").toString();
         });
-        const QJsonObject row = rows.first();
-        const QString id = row.value("id").toString();
-        const QJsonObject model = models.value(id).toObject();
-        const QJsonObject install = model.value("install").toObject();
-        const QString unit = model.value("unit").toString();
-        const QString error = model.value("error").toString();
-        QString phase = "offer";
-        if (unit == "installing")
-            phase = !error.isEmpty() ? "failed" : install.value("phase").toString("waiting");
-        else if (unit == "activating")
-            phase = "starting";
-        else if (unit == "active")
-            phase = "ready";
-        else if (!model.isEmpty())
-            phase = "installed";
-        constexpr double gib = 1024.0 * 1024 * 1024;
-        offers << QVariantMap{{"id", id}, {"kind", kind}, {"name", row.value("name").toString(id)},
-                              {"vendor", row.value("vendor").toString()},
-                              {"downloadBytes", qint64(row.value("download_gib").toDouble() * gib)},
-                              {"memoryBytes", qint64(row.value("memory_gib").toDouble() * gib)},
-                              {"phase", phase}, {"error", error},
-                              {"doneBytes", install.value("done_bytes").toInteger()},
-                              {"totalBytes", install.value("total_bytes").toInteger()},
-                              {"rateBytes", install.value("rate_bytes_s").toInteger()}};
+        for (const QJsonObject &row : rows) {
+            const QString id = row.value("id").toString();
+            const QJsonObject model = models.value(id).toObject();
+            const QJsonObject install = model.value("install").toObject();
+            const QString unit = model.value("unit").toString();
+            const QString error = model.value("error").toString();
+            const bool available = row.value("available").toBool();
+            const QString reason = row.value("reason").toString();
+            QString phase = "offer";
+            if (unit == "installing")
+                phase = !error.isEmpty() ? "failed" : install.value("phase").toString("waiting");
+            else if (unit == "activating")
+                phase = "starting";
+            else if (unit == "active")
+                phase = "ready";
+            else if (!model.isEmpty())
+                phase = "installed";
+            else if (!available)
+                phase = "unavailable";
+            constexpr double gib = 1024.0 * 1024 * 1024;
+            offers << QVariantMap{{"id", id}, {"kind", kind}, {"name", row.value("name").toString(id)},
+                                  {"vendor", row.value("vendor").toString()},
+                                  {"downloadBytes", qint64(row.value("download_gib").toDouble() * gib)},
+                                  {"memoryBytes", qint64(row.value("memory_gib").toDouble() * gib)},
+                                  {"available", available}, {"reason", reason},
+                                  {"fit", offerFit(available, reason)},
+                                  {"phase", phase}, {"error", error},
+                                  {"doneBytes", install.value("done_bytes").toInteger()},
+                                  {"totalBytes", install.value("total_bytes").toInteger()},
+                                  {"rateBytes", install.value("rate_bytes_s").toInteger()}};
+        }
     }
     return offers;
 }

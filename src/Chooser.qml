@@ -37,11 +37,22 @@ Item {
         }
         return parts.join(" · ")
     }
+    function fitLabel(fit) {
+        return fit === "fits" ? qsTr("Runs here")
+             : fit === "adjust" ? qsTr("Needs adjustment") : qsTr("Not available here")
+    }
+    function fitColor(fit) {
+        return fit === "fits" ? (theme.colors.green || theme.accent)
+             : fit === "adjust" ? (theme.colors.yellow || theme.accent)
+             : (theme.colors.red || theme.foreground)
+    }
+    readonly property bool hasWarnings: models.offers.some(offer => offer.fit !== "fits")
 
     // As many cards across as fit at 240 or more each, up to three; what's
     // too tall for the stage scrolls, centred while it fits.
-    readonly property int across: Math.max(1, Math.min(models.offers.length, Math.floor((width - 40 + 18) / (240 + 18))))
-    readonly property int cardWidth: Math.min(300, Math.floor((width - 40 - (across - 1) * 18) / across))
+    readonly property int pageWidth: Math.min(width - 40, 980)
+    readonly property int across: Math.max(1, Math.min(models.offers.length, Math.floor((pageWidth + 18) / (240 + 18))))
+    readonly property int cardWidth: Math.min(300, Math.floor((pageWidth - (across - 1) * 18) / across))
 
     Flickable {
         anchors.fill: parent
@@ -54,7 +65,7 @@ Item {
         ColumnLayout {
             id: page
             anchors.centerIn: parent
-            width: Math.min(parent.width - 40, 980)
+            width: root.pageWidth
             spacing: 10
 
             Label {
@@ -77,7 +88,8 @@ Item {
                 font.pixelSize: 15
                 color: root.muted
                 visible: text !== ""
-                text: !root.ready ? qsTr("Each runs right here on this machine. Pick one to download, or more.")
+                text: !root.ready && root.hasWarnings ? qsTr("Some models need different hardware or a newer engine. See the warnings.")
+                    : !root.ready ? qsTr("Each runs right here on this machine. Pick one to download, or more.")
                     : root.busy ? qsTr("The rest keeps downloading underneath.") : ""
             }
 
@@ -97,11 +109,12 @@ Item {
                         readonly property bool working: ["waiting", "downloading", "starting"].indexOf(phase) >= 0
                         objectName: "offer-" + modelData.kind
                         Layout.preferredWidth: root.cardWidth
-                        Layout.preferredHeight: cards.columns > 1 ? 290 : implicitHeight
+                        Layout.preferredHeight: Math.max(cards.columns > 1 ? 320 : 0, implicitHeight)
                         implicitHeight: content.implicitHeight + 44
                         radius: theme.radius
                         color: Qt.rgba(theme.background.r, theme.background.g, theme.background.b, 0.85)
-                        border.color: phase === "offer" || phase === "installed" ? root.line : phase === "failed" ? theme.colors.red || theme.accent : theme.accent
+                        border.color: phase === "offer" || phase === "installed" ? root.line
+                            : phase === "failed" || phase === "unavailable" ? root.fitColor(modelData.fit) : theme.accent
                         border.width: 1
 
                         ColumnLayout {
@@ -131,6 +144,31 @@ Item {
                                 font.pixelSize: 15
                                 color: theme.foreground
                             }
+                            // Fit at a glance, and why, so an unavailable model is never a mystery.
+                            RowLayout {
+                                Layout.topMargin: 2
+                                spacing: 7
+                                Rectangle {
+                                    Layout.preferredWidth: 8
+                                    Layout.preferredHeight: 8
+                                    radius: 4
+                                    color: root.fitColor(card.modelData.fit)
+                                }
+                                Label {
+                                    text: root.fitLabel(card.modelData.fit)
+                                    font.pixelSize: 12
+                                    font.weight: Font.Medium
+                                    color: root.fitColor(card.modelData.fit)
+                                }
+                            }
+                            Label {
+                                Layout.fillWidth: true
+                                visible: card.modelData.fit !== "fits" && card.modelData.reason !== ""
+                                wrapMode: Text.WordWrap
+                                font.pixelSize: 12
+                                color: root.fitColor(card.modelData.fit)
+                                text: card.modelData.reason
+                            }
                             Label {
                                 Layout.fillWidth: true
                                 text: root.blurb(card.modelData.kind)
@@ -156,7 +194,7 @@ Item {
                             Button {
                                 id: get
                                 objectName: "download"
-                                visible: card.phase === "offer" || card.phase === "failed"
+                                visible: (card.phase === "offer" || card.phase === "failed") && card.modelData.fit === "fits"
                                 Layout.fillWidth: true
                                 highlighted: true
                                 enabled: !root.models.working
@@ -173,6 +211,16 @@ Item {
                                     horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                 }
+                            }
+                            Label {
+                                visible: card.phase === "unavailable"
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 36
+                                verticalAlignment: Text.AlignVCenter
+                                font.pixelSize: 13
+                                color: root.muted
+                                text: card.modelData.fit === "adjust" ? qsTr("Try a smaller version on this machine")
+                                                                       : qsTr("This model can't run here yet")
                             }
                             ColumnLayout {
                                 visible: card.working
