@@ -1293,6 +1293,65 @@ private slots:
         QCoreApplication::removeTranslator(&translator);
     }
 
+    void theModelsMarkOpensEveryModelToRemoveOne() {
+        QTemporaryDir dir;
+        Translator translator(dir.path() + "/language");
+        QCoreApplication::installTranslator(&translator);
+        Theme theme(dir.path());
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/status.json", q("{'models': {"
+                                        "'z': {'kind': 'image', 'name': 'Z-Image Turbo', 'unit': 'active', 'endpoint': 'http://127.0.0.1:1/v1'},"
+                                        "'k': {'kind': 'image', 'name': 'Klein', 'unit': 'inactive'}}}"));
+        write(state + "/list.json", q("[ {'id': 'k', 'kind': 'image', 'name': 'Klein', 'available': true, 'download_gib': 8}]"));
+        write(state + "/key", "secret\n");
+        const QString command = dir.path() + "/engine";
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n");
+        QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+        Backend backend({state, state + "/key", command, dir.path() + "/out", "/bin/true", {}});
+
+        QQmlApplicationEngine engine;
+        QStringList warnings;
+        connect(&engine, &QQmlEngine::warnings, this, [&](const QList<QQmlError> &errors) {
+            for (const auto &error : errors)
+                warnings << error.toString();
+        });
+        engine.rootContext()->setContextProperty("translator", &translator);
+        engine.rootContext()->setContextProperty("theme", &theme);
+        engine.rootContext()->setContextProperty("backend", &backend);
+        engine.load(QUrl("qrc:/Main.qml"));
+        QVERIFY(!engine.rootObjects().isEmpty());
+        auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().first());
+        QVERIFY(QTest::qWaitForWindowExposed(window));
+        const auto click = [&](QQuickItem *button) {
+            QTest::mouseClick(window, Qt::LeftButton, {}, button->mapToScene(QPointF(button->width() / 2, button->height() / 2)).toPoint());
+        };
+
+        // A click on the mark in use lists every model.
+        auto *mark = item(window->contentItem(), "model");
+        QVERIFY(mark);
+        click(mark);
+        auto *library = window->findChild<QObject *>("library");
+        QVERIFY(library);
+        QTRY_VERIFY(library->property("opened").toBool());
+        auto *panel = qvariant_cast<QQuickItem *>(library->property("contentItem"));
+        auto *klein = item(panel, "row-k");
+        QVERIFY(klein && item(panel, "row-z"));
+
+        // Removing asks first.
+        click(item(klein, "remove"));
+        QTRY_VERIFY(item(klein, "confirmRemove")->isVisible());
+        click(item(klein, "confirmRemove"));
+        const auto asked = [&] {
+            QFile file(dir.path() + "/asked");
+            return file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
+        };
+        QTRY_VERIFY(asked().contains("remove k"));
+
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join('\n')));
+        QCoreApplication::removeTranslator(&translator);
+    }
+
     void generatorEstimatesTheTimeLeftFromTheLastOneLikeIt() {
         // From nothing remembered, even when a run before stopped halfway.
         QSettings().remove("durations");
