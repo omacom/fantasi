@@ -638,6 +638,10 @@ void Models::setWatching(bool watching) {
         readMemory();
     } else {
         m_memoryTimer.stop();
+        // Measured only while watched: an old figure would outlast what the
+        // model holds now, so what it took to load stands in again.
+        m_memory.held.clear();
+        reload();
     }
     emit watchingChanged();
 }

@@ -1727,6 +1727,7 @@ ApplicationWindow {
         models: win.models
         muted: win.muted
         line: win.line
+        busy: generator.busy
     }
 
     Popup {

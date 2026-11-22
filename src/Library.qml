@@ -12,6 +12,8 @@ Popup {
     required property var models
     required property color muted
     required property color line
+    // Something is being made: nothing may stop or swap the model under it.
+    required property bool busy
 
     // The row asking whether to remove its model, by id.
     property string confirming: ""
@@ -364,7 +366,7 @@ Popup {
                                 Layout.alignment: Qt.AlignTop
                                 spacing: 2
                                 visible: !entry.asking
-                                enabled: !root.models.working
+                                enabled: !root.models.working && !root.busy
 
                                 Button {
                                     objectName: "update"
@@ -462,6 +464,7 @@ Popup {
                         // Removing asks first, saying what it frees.
                         RowLayout {
                             visible: entry.asking
+                            enabled: !root.busy
                             Layout.fillWidth: true
                             Layout.leftMargin: 42
                             Layout.bottomMargin: 8
