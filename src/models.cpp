@@ -26,6 +26,14 @@ bool isMaker(const QJsonObject &row) {
     return kind == "image" || kind == "video" || kind == "music";
 }
 
+// Whether a set-up model can run on this machine as it is. Of the reasons the
+// engine gives for one not fitting, only a lack of free memory goes away by
+// stopping other models; a GPU too small, or one waiting on a reboot to
+// address more, leaves nothing to switch to.
+bool runsHere(const QJsonObject &row) {
+    return row.value("fits").toBool(true) || row.value("fit_reason").toString() == "Not enough memory";
+}
+
 } // namespace
 
 Models::Models(const QString &stateDirectory, const QString &keyPath, const QString &command, QObject *parent)
@@ -100,8 +108,10 @@ Models::Discovery Models::discover(const QJsonObject &status, const QJsonArray &
     for (auto it = models.begin(); it != models.end(); ++it) {
         QJsonObject row = it.value().toObject();
         row.insert("id", it.key());
-        if (isMaker(row))
-            images << row;
+        if (isMaker(row)) {
+            if (runsHere(row))
+                images << row;
+        }
         else if (row.value("unit").toString() == "active") {
             runningText << row.value("name").toString(it.key());
             runningTextIds << it.key();

@@ -329,7 +329,8 @@ private slots:
         };
         const auto status = [&](bool fits) {
             write(state + "/status.json", QJsonDocument(QJsonObject{{"models", QJsonObject{
-                {"k", QJsonObject{{"kind", "image"}, {"name", "K"}, {"unit", "inactive"}, {"fits", fits}}},
+                {"k", QJsonObject{{"kind", "image"}, {"name", "K"}, {"unit", "inactive"}, {"fits", fits},
+                                   {"fit_reason", fits ? "" : "Not enough memory"}}},
                 {"z", QJsonObject{{"kind", "image"}, {"name", "Z"}, {"unit", "active"}, {"endpoint", "http://127.0.0.1:1/v1"}}}}}}).toJson());
         };
 
@@ -499,6 +500,17 @@ private slots:
         QCOMPARE(found.state, QString("blocked"));
         QCOMPARE(found.blockers, QStringList{"Qwen3.8 27B"});
         QCOMPARE(found.blockerIds, QStringList{"qwen"});
+    }
+
+    void discoveryOffersNoModelThatCantFitThisMachine() {
+        // MiniMax needs more GPU memory than this machine gives, which no
+        // stopping of other models changes; Z only waits for room.
+        const auto found = Models::discover(json(q("{'models': { 'k': {'kind': 'image', 'name': 'K', 'unit': 'active', 'endpoint': 'http://127.0.0.1:1/v1'}, 'minimax': {'kind': 'video', 'name': 'MiniMax', 'unit': 'inactive', 'fits': false, 'fit_reason': 'Reboot to raise the GPU memory limit'}, 'z': {'kind': 'image', 'name': 'Z', 'unit': 'inactive', 'fits': false, 'fit_reason': 'Not enough memory'}}}")), {}, true, "minimax");
+        QCOMPARE(found.id, QString("k"));
+        QStringList ids;
+        for (const QVariant &choice : found.choices)
+            ids << choice.toMap().value("id").toString();
+        QCOMPARE(ids, (QStringList{"k", "z"}));
     }
 
     void discoveryOffersTheBestModelThatRunsHere() {
