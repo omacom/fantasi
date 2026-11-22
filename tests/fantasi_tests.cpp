@@ -529,6 +529,96 @@ private slots:
         QCOMPARE(found.reason, QString("The download stopped"));
     }
 
+    void theLibraryListsEveryMediaModelAndWhatItTakes() {
+        Models::Memory memory;
+        memory.total = 62;
+        memory.free = 20;
+        memory.held = {{"qwen", 40}, {"z", 9}};
+        QStringList order;
+        const QVariantMap library = Models::libraryFrom(
+            json(q("{'models': {"
+                   "'qwen': {'kind': 'text', 'name': 'Qwen3.8 27B', 'unit': 'active'},"
+                   "'z': {'kind': 'image', 'name': 'Z', 'unit': 'active', 'update': {'weights': true, 'download_bytes': 1000}},"
+                   "'m': {'kind': 'video', 'name': 'M', 'unit': 'inactive', 'fits': false},"
+                   "'a': {'kind': 'music', 'name': 'A', 'unit': 'installing', 'error': '', 'install': {'phase': 'downloading', 'done_bytes': 3, 'total_bytes': 8}}}}")),
+            jsonArray(q("[ {'id': 'qwen', 'kind': 'text', 'available': true, 'memory_gib': 42},"
+                        "{'id': 'z', 'kind': 'image', 'name': 'Z', 'available': true, 'memory_gib': 14, 'download_gib': 10},"
+                        "{'id': 'z-cuda', 'kind': 'image', 'name': 'Z', 'available': false, 'reason': 'runtime sdcpp-cuda cannot run here'},"
+                        "{'id': 'k', 'kind': 'image', 'name': 'K', 'available': true, 'best': true, 'memory_gib': 70, 'download_gib': 8},"
+                        "{'id': 'm', 'kind': 'video', 'name': 'M', 'available': true, 'memory_gib': 26},"
+                        "{'id': 'w', 'kind': 'video', 'name': 'W', 'available': false, 'reason': 'needs 89 GiB'},"
+                        "{'id': 'a', 'kind': 'music', 'name': 'A', 'available': true, 'memory_gib': 8}]")),
+            memory, "z", &order);
+
+        // Images, video, music, then what isn't for this machine: no text
+        // models, and a variant for other graphics hides behind the one here.
+        QCOMPARE(order, (QStringList{"z", "k", "m", "a", "w"}));
+        QCOMPARE(library["z"].toMap()["state"], QVariant("running"));
+        QCOMPARE(library["z"].toMap()["held"], QVariant(9.0));
+        QVERIFY(library["z"].toMap()["inUse"].toBool());
+        QVERIFY(library["z"].toMap()["update"].toBool());
+        QCOMPARE(library["k"].toMap()["state"], QVariant("offer"));
+        QCOMPARE(library["a"].toMap()["state"], QVariant("installing"));
+        QCOMPARE(library["a"].toMap()["doneBytes"], QVariant(qint64(3)));
+        QCOMPARE(library["w"].toMap()["state"], QVariant("unavailable"));
+        QCOMPARE(library["w"].toMap()["reason"], QVariant("needs 89 GiB"));
+
+        // M needs 6 GB more than is free: Z alone makes room, rather than the
+        // coding model and its 40.
+        const QVariantMap video = library["m"].toMap();
+        QVERIFY(!video["fits"].toBool());
+        QCOMPARE(video["room"].toList().size(), 1);
+        QCOMPARE(video["room"].toList()[0].toMap()["name"], QVariant("Z"));
+        QCOMPARE(video["shortBy"], QVariant(0.0));
+        // K needs 50 more: both go, the biggest first, and it's still 1 short.
+        const QVariantMap big = library["k"].toMap();
+        QCOMPARE(big["room"].toList().size(), 2);
+        QCOMPARE(big["room"].toList()[0].toMap()["name"], QVariant("Qwen3.8 27B"));
+        QCOMPARE(big["shortBy"], QVariant(1.0));
+    }
+
+    void startingAModelStopsWhatsInItsWayFirst() {
+        QTemporaryDir dir;
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/status.json", q("{'models': {"
+                                        "'qwen': {'kind': 'text', 'name': 'Qwen3.8 27B', 'unit': 'active'},"
+                                        "'z': {'kind': 'image', 'name': 'Z', 'unit': 'inactive', 'fits': false}}}"));
+        write(state + "/list.json", q("[ {'id': 'qwen', 'kind': 'text', 'available': true, 'memory_gib': 40},"
+                                      "{'id': 'z', 'kind': 'image', 'name': 'Z', 'available': true, 'memory_gib': 14}]"));
+        // 10 GiB free of 64.
+        write(dir.path() + "/meminfo", "MemTotal:       67108864 kB\nMemAvailable:    9437184 kB\nGPUReclaim:     1048576 kB\n");
+        // An engine that notes what it's asked to do.
+        const QString command = dir.path() + "/engine";
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n");
+        QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+        const auto asked = [&] {
+            QFile file(dir.path() + "/asked");
+            QByteArrayList lines = file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
+            lines.removeAll("");
+            lines.removeAll("refresh --quiet");
+            return lines;
+        };
+
+        Models models(state, state + "/key", command);
+        models.setMeminfoPath(dir.path() + "/meminfo");
+        QCOMPARE(models.memoryTotal(), 64.0);
+        QCOMPARE(models.memoryFree(), 10.0);
+        QCOMPARE(models.blockers(), QStringList{"Qwen3.8 27B"});
+        models.startModel("z");
+        QTRY_VERIFY(!models.working());
+        QCOMPARE(asked(), (QByteArrayList{"stop qwen", "start z"}));
+
+        // With room to spare, it simply starts.
+        QFile::remove(dir.path() + "/asked");
+        write(dir.path() + "/meminfo", "MemTotal:       67108864 kB\nMemAvailable:   31457280 kB\n");
+        models.readMemory();
+        models.startModel("z");
+        QTRY_VERIFY(!models.working());
+        QCOMPARE(asked(), QByteArrayList{"start z"});
+        QSettings().remove("model");
+    }
+
     void aFirstRunOffersWhatFitsAndLastsUntilTheFirstPrompt() {
         QTemporaryDir dir;
         const QString state = dir.path() + "/state";
