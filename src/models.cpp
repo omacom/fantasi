@@ -147,6 +147,7 @@ Models::Discovery Models::discover(const QJsonObject &status, const QJsonArray &
                                          {"fits", row.value("fits").toBool(true)},
                                          {"video", row.value("kind").toString() == "video"},
                                          {"music", row.value("kind").toString() == "music"},
+                                         {"vocals", row.value("vocals").toBool(true)},
                                          {"vendor", row.value("vendor").toString()}};
     for (const QJsonObject &row : images)
         if (row.value("unit").toString() == "active" && row.value("edit").toBool() && found.editEndpoint.isEmpty()) {
@@ -168,6 +169,7 @@ Models::Discovery Models::discover(const QJsonObject &status, const QJsonArray &
             found.edits = row.value("edit").toBool();
             found.video = row.value("kind").toString() == "video";
             found.music = row.value("kind").toString() == "music";
+            found.vocals = row.value("vocals").toBool(true);
             found.maxSeconds = row.value("max_seconds").toInt(-1);
             found.state = QString(unit) == "active" ? "ready" : QString(unit) == "activating" ? "starting" : "installing";
             // What a setup screen shows: the download's progress, then the
@@ -195,6 +197,7 @@ Models::Discovery Models::discover(const QJsonObject &status, const QJsonArray &
         found.name = row.value("name").toString(found.id);
         found.video = row.value("kind").toString() == "video";
         found.music = row.value("kind").toString() == "music";
+        found.vocals = row.value("vocals").toBool(true);
         found.maxSeconds = row.value("max_seconds").toInt(-1);
         // An installed model the memory can't hold right now waits for the
         // text models in its way.
@@ -464,6 +467,7 @@ QVariantList Models::offersFrom(const QJsonObject &status, const QJsonArray &lis
         constexpr double gib = 1024.0 * 1024 * 1024;
         offers << QVariantMap{{"id", id}, {"kind", kind}, {"name", row.value("name").toString(id)},
                               {"vendor", row.value("vendor").toString()},
+                              {"vocals", row.value("vocals").toBool(true)},
                               {"downloadBytes", qint64(row.value("download_gib").toDouble() * gib)},
                               {"memoryBytes", qint64(row.value("memory_gib").toDouble() * gib)},
                               {"phase", phase}, {"error", error},
@@ -775,10 +779,16 @@ void Models::reload() {
             }
         }
     }
-    found.vendor = status.value("models").toObject().value(found.id).toObject().value("vendor").toString();
-    for (const QJsonValue &row : list)
-        if (found.vendor.isEmpty() && row.toObject().value("id").toString() == found.id)
-            found.vendor = row.toObject().value("vendor").toString();
+    const QJsonObject foundRow = status.value("models").toObject().value(found.id).toObject();
+    found.vendor = foundRow.value("vendor").toString();
+    for (const QJsonValue &row : list) {
+        if (row.toObject().value("id").toString() == found.id) {
+            if (found.vendor.isEmpty())
+                found.vendor = row.toObject().value("vendor").toString();
+            if (!foundRow.contains("vocals") && row.toObject().contains("vocals"))
+                found.vocals = row.toObject().value("vocals").toBool(true);
+        }
+    }
     if (found.state == "ready" && found.id != preferred)
         settings.setValue("model", found.id);
 
@@ -790,7 +800,7 @@ void Models::reload() {
     if (found.state != m_found.state || found.id != m_found.id || found.endpoint != m_found.endpoint || found.edits != m_found.edits
         || found.reason != m_found.reason || found.blockers != m_found.blockers
         || found.choices != m_found.choices || found.editEndpoint != m_found.editEndpoint || found.vendor != m_found.vendor || found.video != m_found.video || found.maxSeconds != m_found.maxSeconds
-        || found.music != m_found.music
+        || found.music != m_found.music || found.vocals != m_found.vocals
         || found.setupPhase != m_found.setupPhase || found.doneBytes != m_found.doneBytes || found.totalBytes != m_found.totalBytes
         || found.rateBytes != m_found.rateBytes || found.startedMs != m_found.startedMs || found.loadSeconds != m_found.loadSeconds
         || found.firstStart != m_found.firstStart || settingUp != m_settingUp || found.offers != m_found.offers) {
