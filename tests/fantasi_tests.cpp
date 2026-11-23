@@ -628,7 +628,7 @@ private slots:
         QDir().mkpath(state);
         write(state + "/status.json", q("{'models': {"
                                         "'qwen': {'kind': 'text', 'name': 'Qwen3.8 27B', 'unit': 'active'},"
-                                        "'z': {'kind': 'image', 'name': 'Z', 'unit': 'inactive', 'fits': false}}}"));
+                                        "'z': {'kind': 'image', 'name': 'Z', 'unit': 'inactive', 'fits': false, 'fit_reason': 'Not enough memory'}}}"));
         write(state + "/list.json", q("[ {'id': 'qwen', 'kind': 'text', 'available': true, 'memory_gib': 40},"
                                       "{'id': 'z', 'kind': 'image', 'name': 'Z', 'available': true, 'memory_gib': 14}]"));
         // 10 GiB free of 64.
