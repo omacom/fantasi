@@ -311,6 +311,38 @@ private slots:
         QVERIFY(models.error().isEmpty());
     }
 
+    void holdsTheModelInUseAndStopsTheMediaModelsOnQuit() {
+        QTemporaryDir dir;
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/list.json", "[]");
+        write(state + "/status.json", QJsonDocument(QJsonObject{{"models", QJsonObject{
+            {"z", QJsonObject{{"kind", "image"}, {"name", "Z"}, {"unit", "active"}, {"endpoint", "http://127.0.0.1:1/v1"}}},
+            {"a", QJsonObject{{"kind", "music"}, {"name", "A"}, {"unit", "active"}, {"endpoint", "http://127.0.0.1:2/v1"}}},
+            {"k", QJsonObject{{"kind", "image"}, {"name", "K"}, {"unit", "inactive"}}},
+            {"qwen", QJsonObject{{"name", "Qwen"}, {"unit", "active"}}}}}}).toJson());
+        const QString command = dir.path() + "/engine";
+        // Its hold lasts until its input closes, as the engine's does.
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n"
+                       "[ \"$1\" = hold ] && cat > /dev/null && echo released >> '" + dir.path().toUtf8() + "/asked'\n");
+        QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+        QSettings().setValue("model", "z");
+        const auto asked = [&] {
+            QFile file(dir.path() + "/asked");
+            return (file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray()).replace("refresh --quiet\n", "");
+        };
+
+        Models models(state, state + "/key", command);
+        QTRY_VERIFY(asked().contains("hold z\n"));
+        // Held for as long as the app runs, and let go before anything is stopped.
+        QTest::qWait(200);
+        QVERIFY(!asked().contains("released"));
+        // The running media models, held elsewhere or not, but never a text model.
+        models.release();
+        QTRY_VERIFY(asked().endsWith("hold z\nreleased\nstop --unless-used a z\n"));
+        QSettings().remove("model");
+    }
+
     void choosingAModelStopsTheOneInUseOnlyForRoom() {
         QTemporaryDir dir;
         const QString state = dir.path() + "/state";
@@ -325,6 +357,7 @@ private slots:
             QByteArrayList lines = file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
             lines.removeAll("");
             lines.removeAll("refresh --quiet");
+            lines.removeIf([](const QByteArray &line) { return line.startsWith("hold "); });
             return lines;
         };
         const auto status = [&](bool fits) {
@@ -527,6 +560,97 @@ private slots:
         found = Models::discover(json(q("{'models': {'z': {'kind': 'image', 'name': 'Z', 'unit': 'installing', 'error': 'The download stopped', 'install': {'phase': 'failed'}}}}")), {}, true);
         QCOMPARE(found.setupPhase, QString("failed"));
         QCOMPARE(found.reason, QString("The download stopped"));
+    }
+
+    void theLibraryListsEveryMediaModelAndWhatItTakes() {
+        Models::Memory memory;
+        memory.total = 62;
+        memory.free = 20;
+        memory.held = {{"qwen", 40}, {"z", 9}};
+        QStringList order;
+        const QVariantMap library = Models::libraryFrom(
+            json(q("{'models': {"
+                   "'qwen': {'kind': 'text', 'name': 'Qwen3.8 27B', 'unit': 'active'},"
+                   "'z': {'kind': 'image', 'name': 'Z', 'unit': 'active', 'update': {'weights': true, 'download_bytes': 1000}},"
+                   "'m': {'kind': 'video', 'name': 'M', 'unit': 'inactive', 'fits': false},"
+                   "'a': {'kind': 'music', 'name': 'A', 'unit': 'installing', 'error': '', 'install': {'phase': 'downloading', 'done_bytes': 3, 'total_bytes': 8}}}}")),
+            jsonArray(q("[ {'id': 'qwen', 'kind': 'text', 'available': true, 'memory_gib': 42},"
+                        "{'id': 'z', 'kind': 'image', 'name': 'Z', 'available': true, 'memory_gib': 14, 'download_gib': 10},"
+                        "{'id': 'z-cuda', 'kind': 'image', 'name': 'Z', 'available': false, 'reason': 'runtime sdcpp-cuda cannot run here'},"
+                        "{'id': 'k', 'kind': 'image', 'name': 'K', 'available': true, 'best': true, 'memory_gib': 70, 'download_gib': 8},"
+                        "{'id': 'm', 'kind': 'video', 'name': 'M', 'available': true, 'memory_gib': 26},"
+                        "{'id': 'w', 'kind': 'video', 'name': 'W', 'available': false, 'reason': 'needs 89 GiB'},"
+                        "{'id': 'a', 'kind': 'music', 'name': 'A', 'available': true, 'memory_gib': 8}]")),
+            memory, "z", &order);
+
+        // Images, video, music, then what isn't for this machine: no text
+        // models, and a variant for other graphics hides behind the one here.
+        QCOMPARE(order, (QStringList{"z", "k", "m", "a", "w"}));
+        QCOMPARE(library["z"].toMap()["state"], QVariant("running"));
+        QCOMPARE(library["z"].toMap()["held"], QVariant(9.0));
+        QVERIFY(library["z"].toMap()["inUse"].toBool());
+        QVERIFY(library["z"].toMap()["update"].toBool());
+        QCOMPARE(library["k"].toMap()["state"], QVariant("offer"));
+        QCOMPARE(library["a"].toMap()["state"], QVariant("installing"));
+        QCOMPARE(library["a"].toMap()["doneBytes"], QVariant(qint64(3)));
+        QCOMPARE(library["w"].toMap()["state"], QVariant("unavailable"));
+        QCOMPARE(library["w"].toMap()["reason"], QVariant("needs 89 GiB"));
+
+        // M needs 6 GB more than is free: Z alone makes room, rather than the
+        // coding model and its 40.
+        const QVariantMap video = library["m"].toMap();
+        QVERIFY(!video["fits"].toBool());
+        QCOMPARE(video["room"].toList().size(), 1);
+        QCOMPARE(video["room"].toList()[0].toMap()["name"], QVariant("Z"));
+        QCOMPARE(video["shortBy"], QVariant(0.0));
+        // K needs 50 more: both go, the biggest first, and it's still 1 short.
+        const QVariantMap big = library["k"].toMap();
+        QCOMPARE(big["room"].toList().size(), 2);
+        QCOMPARE(big["room"].toList()[0].toMap()["name"], QVariant("Qwen3.8 27B"));
+        QCOMPARE(big["shortBy"], QVariant(1.0));
+    }
+
+    void startingAModelStopsWhatsInItsWayFirst() {
+        QTemporaryDir dir;
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/status.json", q("{'models': {"
+                                        "'qwen': {'kind': 'text', 'name': 'Qwen3.8 27B', 'unit': 'active'},"
+                                        "'z': {'kind': 'image', 'name': 'Z', 'unit': 'inactive', 'fits': false}}}"));
+        write(state + "/list.json", q("[ {'id': 'qwen', 'kind': 'text', 'available': true, 'memory_gib': 40},"
+                                      "{'id': 'z', 'kind': 'image', 'name': 'Z', 'available': true, 'memory_gib': 14}]"));
+        // 10 GiB free of 64.
+        write(dir.path() + "/meminfo", "MemTotal:       67108864 kB\nMemAvailable:    9437184 kB\nGPUReclaim:     1048576 kB\n");
+        // An engine that notes what it's asked to do.
+        const QString command = dir.path() + "/engine";
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n");
+        QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+        const auto asked = [&] {
+            QFile file(dir.path() + "/asked");
+            QByteArrayList lines = file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
+            lines.removeAll("");
+            lines.removeAll("refresh --quiet");
+            lines.removeIf([](const QByteArray &line) { return line.startsWith("hold "); });
+            return lines;
+        };
+
+        Models models(state, state + "/key", command);
+        models.setMeminfoPath(dir.path() + "/meminfo");
+        QCOMPARE(models.memoryTotal(), 64.0);
+        QCOMPARE(models.memoryFree(), 10.0);
+        QCOMPARE(models.blockers(), QStringList{"Qwen3.8 27B"});
+        models.startModel("z");
+        QTRY_VERIFY(!models.working());
+        QCOMPARE(asked(), (QByteArrayList{"stop qwen", "start z"}));
+
+        // With room to spare, it simply starts.
+        QFile::remove(dir.path() + "/asked");
+        write(dir.path() + "/meminfo", "MemTotal:       67108864 kB\nMemAvailable:   31457280 kB\n");
+        models.readMemory();
+        models.startModel("z");
+        QTRY_VERIFY(!models.working());
+        QCOMPARE(asked(), QByteArrayList{"start z"});
+        QSettings().remove("model");
     }
 
     void aFirstRunOffersWhatFitsAndLastsUntilTheFirstPrompt() {
@@ -1198,6 +1322,65 @@ private slots:
             return file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
         };
         QTRY_VERIFY(asked().contains("start z"));
+
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join('\n')));
+        QCoreApplication::removeTranslator(&translator);
+    }
+
+    void theModelsMarkOpensEveryModelToRemoveOne() {
+        QTemporaryDir dir;
+        Translator translator(dir.path() + "/language");
+        QCoreApplication::installTranslator(&translator);
+        Theme theme(dir.path());
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/status.json", q("{'models': {"
+                                        "'z': {'kind': 'image', 'name': 'Z-Image Turbo', 'unit': 'active', 'endpoint': 'http://127.0.0.1:1/v1'},"
+                                        "'k': {'kind': 'image', 'name': 'Klein', 'unit': 'inactive'}}}"));
+        write(state + "/list.json", q("[ {'id': 'k', 'kind': 'image', 'name': 'Klein', 'available': true, 'download_gib': 8}]"));
+        write(state + "/key", "secret\n");
+        const QString command = dir.path() + "/engine";
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n");
+        QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+        Backend backend({state, state + "/key", command, dir.path() + "/out", "/bin/true", {}});
+
+        QQmlApplicationEngine engine;
+        QStringList warnings;
+        connect(&engine, &QQmlEngine::warnings, this, [&](const QList<QQmlError> &errors) {
+            for (const auto &error : errors)
+                warnings << error.toString();
+        });
+        engine.rootContext()->setContextProperty("translator", &translator);
+        engine.rootContext()->setContextProperty("theme", &theme);
+        engine.rootContext()->setContextProperty("backend", &backend);
+        engine.load(QUrl("qrc:/Main.qml"));
+        QVERIFY(!engine.rootObjects().isEmpty());
+        auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().first());
+        QVERIFY(QTest::qWaitForWindowExposed(window));
+        const auto click = [&](QQuickItem *button) {
+            QTest::mouseClick(window, Qt::LeftButton, {}, button->mapToScene(QPointF(button->width() / 2, button->height() / 2)).toPoint());
+        };
+
+        // A click on the mark in use lists every model.
+        auto *mark = item(window->contentItem(), "model");
+        QVERIFY(mark);
+        click(mark);
+        auto *library = window->findChild<QObject *>("library");
+        QVERIFY(library);
+        QTRY_VERIFY(library->property("opened").toBool());
+        auto *panel = qvariant_cast<QQuickItem *>(library->property("contentItem"));
+        auto *klein = item(panel, "row-k");
+        QVERIFY(klein && item(panel, "row-z"));
+
+        // Removing asks first.
+        click(item(klein, "remove"));
+        QTRY_VERIFY(item(klein, "confirmRemove")->isVisible());
+        click(item(klein, "confirmRemove"));
+        const auto asked = [&] {
+            QFile file(dir.path() + "/asked");
+            return file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
+        };
+        QTRY_VERIFY(asked().contains("remove k"));
 
         QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join('\n')));
         QCoreApplication::removeTranslator(&translator);
