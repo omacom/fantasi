@@ -322,19 +322,25 @@ private slots:
             {"k", QJsonObject{{"kind", "image"}, {"name", "K"}, {"unit", "inactive"}}},
             {"qwen", QJsonObject{{"name", "Qwen"}, {"unit", "active"}}}}}}).toJson());
         const QString command = dir.path() + "/engine";
-        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n");
+        // Its hold lasts until its input closes, as the engine's does.
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n"
+                       "[ \"$1\" = hold ] && cat > /dev/null && echo released >> '" + dir.path().toUtf8() + "/asked'\n");
         QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
         QSettings().setValue("model", "z");
         const auto asked = [&] {
             QFile file(dir.path() + "/asked");
-            return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
+            return (file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray()).replace("refresh --quiet\n", "");
         };
 
         Models models(state, state + "/key", command);
         QTRY_VERIFY(asked().contains("hold z\n"));
+        // Held for as long as the app runs, and let go before anything is stopped.
+        QTest::qWait(200);
+        QVERIFY(!asked().contains("released"));
         // The running media models, held elsewhere or not, but never a text model.
         models.release();
-        QTRY_VERIFY(asked().contains("stop --unless-used a z\n"));
+        QVERIFY(asked().endsWith("hold z\nreleased\n"));
+        QTRY_VERIFY(asked().endsWith("hold z\nreleased\nstop --unless-used a z\n"));
         QSettings().remove("model");
     }
 
