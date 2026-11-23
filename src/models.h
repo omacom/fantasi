@@ -141,6 +141,9 @@ public:
         m_process.disconnect(this);
         m_memoryProcess.disconnect(this);
     }
+    // On quit: lets go of the models in use, then stops every media model
+    // running here that no other app holds, nor a tailnet machine uses.
+    void release();
 
     // What to use or offer, from the engine's two files. A row without a kind
     // is a text model, as every row was before the engine had image models.
@@ -251,6 +254,9 @@ private:
     void readMeminfo();
     // What starting a model takes: stopping what's in its way, then the start.
     QList<QStringList> startCommands(const QString &id) const;
+    // Holds the models in use through the engine for as long as the app
+    // runs, so another app quitting leaves them running.
+    void hold();
 
     QString m_directory;
     QString m_keyPath;
@@ -270,6 +276,8 @@ private:
     Memory m_memory;
     QString m_meminfoPath = "/proc/meminfo";
     QProcess m_memoryProcess;
+    QProcess m_hold;
+    QStringList m_held;
     QTimer m_memoryTimer;
     QVariantMap m_library;
     QStringList m_libraryIds;

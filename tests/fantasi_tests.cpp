@@ -311,6 +311,33 @@ private slots:
         QVERIFY(models.error().isEmpty());
     }
 
+    void holdsTheModelInUseAndStopsTheMediaModelsOnQuit() {
+        QTemporaryDir dir;
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/list.json", "[]");
+        write(state + "/status.json", QJsonDocument(QJsonObject{{"models", QJsonObject{
+            {"z", QJsonObject{{"kind", "image"}, {"name", "Z"}, {"unit", "active"}, {"endpoint", "http://127.0.0.1:1/v1"}}},
+            {"a", QJsonObject{{"kind", "music"}, {"name", "A"}, {"unit", "active"}, {"endpoint", "http://127.0.0.1:2/v1"}}},
+            {"k", QJsonObject{{"kind", "image"}, {"name", "K"}, {"unit", "inactive"}}},
+            {"qwen", QJsonObject{{"name", "Qwen"}, {"unit", "active"}}}}}}).toJson());
+        const QString command = dir.path() + "/engine";
+        write(command, "#!/bin/bash\necho \"$@\" >> '" + dir.path().toUtf8() + "/asked'\n");
+        QFile::setPermissions(command, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner);
+        QSettings().setValue("model", "z");
+        const auto asked = [&] {
+            QFile file(dir.path() + "/asked");
+            return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
+        };
+
+        Models models(state, state + "/key", command);
+        QTRY_VERIFY(asked().contains("hold z\n"));
+        // The running media models, held elsewhere or not, but never a text model.
+        models.release();
+        QTRY_VERIFY(asked().contains("stop --unless-used a z\n"));
+        QSettings().remove("model");
+    }
+
     void choosingAModelStopsTheOneInUseOnlyForRoom() {
         QTemporaryDir dir;
         const QString state = dir.path() + "/state";
@@ -325,6 +352,7 @@ private slots:
             QByteArrayList lines = file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
             lines.removeAll("");
             lines.removeAll("refresh --quiet");
+            lines.removeIf([](const QByteArray &line) { return line.startsWith("hold "); });
             return lines;
         };
         const auto status = [&](bool fits) {
@@ -597,6 +625,7 @@ private slots:
             QByteArrayList lines = file.open(QIODevice::ReadOnly) ? file.readAll().split('\n') : QByteArrayList();
             lines.removeAll("");
             lines.removeAll("refresh --quiet");
+            lines.removeIf([](const QByteArray &line) { return line.startsWith("hold "); });
             return lines;
         };
 

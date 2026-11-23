@@ -789,4 +789,38 @@ void Models::reload() {
         emit changed();
     }
     updateLibrary();
+    hold();
+}
+
+void Models::hold() {
+    // This machine's own, set up: a paired host's model is held there.
+    QStringList ids;
+    if (QStringList{"installed", "blocked", "starting", "ready"}.contains(m_found.state))
+        ids << m_found.id;
+    if (!m_found.editId.isEmpty())
+        ids << m_found.editId;
+    ids.removeIf([](const QString &id) { return id.isEmpty() || id.contains('/'); });
+    ids.removeDuplicates();
+    if (ids == m_held || m_command.isEmpty())
+        return;
+    m_held = ids;
+    // The engine holds them until its input closes, as when this app quits or dies.
+    m_hold.closeWriteChannel();
+    m_hold.waitForFinished(1000);
+    if (!ids.isEmpty())
+        m_hold.start(m_command, QStringList{"hold"} + ids);
+}
+
+void Models::release() {
+    m_hold.closeWriteChannel();
+    m_hold.waitForFinished(1000);
+    QStringList running;
+    const QJsonObject models = m_status.value("models").toObject();
+    for (auto it = models.begin(); it != models.end(); ++it) {
+        const QString unit = it.value().toObject().value("unit").toString();
+        if (isMaker(it.value().toObject()) && (unit == "active" || unit == "activating"))
+            running << it.key();
+    }
+    if (!running.isEmpty() && !m_command.isEmpty())
+        QProcess::startDetached(m_command, QStringList{"stop", "--unless-used"} + running);
 }
