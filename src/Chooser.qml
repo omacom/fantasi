@@ -179,15 +179,20 @@ Item {
                                 Layout.fillWidth: true
                                 spacing: 6
                                 Rectangle {
+                                    id: track
+                                    property real fraction: card.phase === "starting" ? 1
+                                        : card.phase === "downloading" && card.modelData.totalBytes > 0
+                                        ? Math.max(0, Math.min(1, card.modelData.doneBytes / card.modelData.totalBytes)) : 0
                                     Layout.fillWidth: true
                                     implicitHeight: 4
                                     color: root.line
+                                    clip: true
+                                    // Keep layout changes out of the progress animation.
+                                    Behavior on fraction { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
                                     Rectangle {
-                                        height: parent.height
-                                        width: parent.width * (card.phase === "downloading" && card.modelData.totalBytes > 0
-                                                               ? Math.min(1, card.modelData.doneBytes / card.modelData.totalBytes) : card.phase === "starting" ? 1 : 0)
+                                        height: track.height
+                                        width: track.width * track.fraction
                                         color: theme.accent
-                                        Behavior on width { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
                                     }
                                 }
                                 Label {
