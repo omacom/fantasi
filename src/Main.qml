@@ -183,7 +183,7 @@ ApplicationWindow {
         sentPictures = baseImages
         sentVideo = videoMode
         sentMusic = musicMode
-        sentLyrics = lyricsChoice === 1 ? lyrics.text : lyricsChoice === 2 ? "[Instrumental]" : ""
+        sentLyrics = models.vocals ? (lyricsChoice === 1 ? lyrics.text : lyricsChoice === 2 ? "[Instrumental]" : "") : ""
         if (musicMode)
             generator.makeSong(prompt.text, sentLyrics, songSeconds, translator.language)
         else if (videoMode)
@@ -744,7 +744,7 @@ ApplicationWindow {
                     objectName: "lyricsBar"
                     Layout.fillWidth: true
                     Layout.preferredHeight: Math.min(Math.max(lyrics.implicitHeight, 34), 160) + 10
-                    visible: win.musicMode && win.lyricsChoice === 1 && !win.choosing && !win.fullView
+                    visible: win.musicMode && models.vocals && win.lyricsChoice === 1 && !win.choosing && !win.fullView
                     color: win.panel
                     radius: Math.min(height / 2, theme.radius)
                     border.color: lyrics.activeFocus ? theme.accent : win.line
@@ -1079,7 +1079,7 @@ ApplicationWindow {
                             enabled: !win.locked
                             opacity: win.locked ? 0.4 : 1
                             Layout.alignment: Qt.AlignVCenter
-                            visible: win.musicMode
+                            visible: win.musicMode && models.vocals
                             Layout.preferredWidth: 32
                             Layout.preferredHeight: 32
                             padding: 0

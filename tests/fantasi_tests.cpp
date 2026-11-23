@@ -1162,6 +1162,66 @@ private slots:
         QCoreApplication::removeTranslator(&translator);
     }
 
+    void anInstrumentalMusicModelSkipsLyrics() {
+        QTemporaryDir dir;
+        FakeServer music;
+        const QByteArray song("an instrumental mp3");
+        music.answer = [&](const QString &method, const QString &path) -> QPair<int, QByteArray> {
+            if (method == "POST" && path == "/synth")
+                return {200, q("{'id': 's1'}")};
+            if (path == "/job?id=s1")
+                return {200, q("{'status': 'done'}")};
+            if (path == "/job?id=s1&result=1")
+                return {200, "--b\r\nContent-Type: audio/mpeg\r\n\r\n" + song + "\r\n--b--\r\n"};
+            return {404, "{}"};
+        };
+        const QString state = dir.path() + "/state";
+        QDir().mkpath(state);
+        write(state + "/status.json", QJsonDocument(QJsonObject{{"models", QJsonObject{{"sa3", QJsonObject{
+            {"kind", "music"}, {"vocals", false}, {"vendor", "stability"}, {"name", "Stable Audio 3 Medium"},
+            {"unit", "active"}, {"endpoint", music.origin() + "/v1"}}}}}}).toJson());
+        write(state + "/list.json", QJsonDocument(QJsonArray{QJsonObject{
+            {"id", "sa3"}, {"kind", "music"}, {"vocals", false}, {"vendor", "stability"},
+            {"name", "Stable Audio 3 Medium"}, {"available", true}, {"download_gib", 2.56}, {"memory_gib", 4}}}).toJson());
+        write(state + "/key", "secret\n");
+
+        Models models(state, state + "/key", "/bin/true");
+        QVERIFY(models.music());
+        QVERIFY(!models.vocals());
+        QCOMPARE(models.offers().first().toMap().value("vocals").toBool(), false);
+
+        Generator generator(&models, dir.path() + "/out", dir.path() + "/music");
+        QSignalSpy saved(&generator, &Generator::saved);
+        generator.makeSong("warm analog synthwave, driving beat", "ignored lyrics", 60, "en");
+        QTRY_COMPARE(saved.count(), 1);
+        QVERIFY(std::none_of(music.requests.begin(), music.requests.end(), [](const auto &r) { return r.first == "POST /lm"; }));
+        const auto synth = std::find_if(music.requests.begin(), music.requests.end(), [](const auto &r) { return r.first == "POST /synth"; });
+        QVERIFY(synth != music.requests.end());
+        QCOMPARE(synth->second.value("caption").toString(), QString("warm analog synthwave, driving beat"));
+        QCOMPARE(synth->second.value("duration").toInt(), 60);
+        const QString path = saved.first().first().toString();
+        const History::Entry entry = History::readEntry(dir.path() + "/out/" + QFileInfo(path).completeBaseName() + ".png", dir.path() + "/music");
+        QCOMPARE(entry.title, QString("warm analog synthwave"));
+
+        // The window hides the lyrics controls while keeping the song length.
+        Translator translator(dir.path() + "/language");
+        QCoreApplication::installTranslator(&translator);
+        Theme theme(dir.path());
+        Backend backend({state, state + "/key", "/bin/true", dir.path() + "/out", "/bin/true", {}});
+        QQmlApplicationEngine engine;
+        engine.rootContext()->setContextProperty("translator", &translator);
+        engine.rootContext()->setContextProperty("theme", &theme);
+        engine.rootContext()->setContextProperty("backend", &backend);
+        engine.load(QUrl("qrc:/Main.qml"));
+        auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().first());
+        QVERIFY(window && QTest::qWaitForWindowExposed(window));
+        QTRY_VERIFY(window->property("musicMode").toBool());
+        QVERIFY(!item(window->contentItem(), "lyricsChoice")->isVisible());
+        QVERIFY(!item(window->contentItem(), "lyricsBar")->isVisible());
+        QVERIFY(item(window->contentItem(), "songLength")->isVisible());
+        QCoreApplication::removeTranslator(&translator);
+    }
+
     void aSongsWaveFormsThenSettlesIntoItsShape() {
         QTemporaryDir dir;
         Theme theme(dir.path());

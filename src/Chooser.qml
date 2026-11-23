@@ -28,9 +28,9 @@ Item {
     function kindName(kind) {
         return kind === "music" ? qsTr("Music") : kind === "video" ? qsTr("Video") : qsTr("Images")
     }
-    function blurb(kind) {
-        return kind === "music" ? qsTr("Songs with vocals, from a style and lyrics")
-             : kind === "video" ? qsTr("Clips with sound, from a prompt or a picture")
+    function blurb(offer) {
+        return offer.kind === "music" ? (offer.vocals === false ? qsTr("Instrumental music, from a description") : qsTr("Songs with vocals, from a style and lyrics"))
+             : offer.kind === "video" ? qsTr("Clips with sound, from a prompt or a picture")
              : qsTr("Pictures from a prompt, or changes to your own")
     }
     function size(bytes) {
@@ -142,7 +142,7 @@ Item {
                             }
                             Label {
                                 Layout.fillWidth: true
-                                text: root.blurb(card.offer.kind)
+                                text: root.blurb(card.offer)
                                 font.pixelSize: 13
                                 wrapMode: Text.WordWrap
                                 color: root.muted
