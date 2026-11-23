@@ -150,7 +150,7 @@
   "Remove %1?": "%1 o‘chirilsinmi?",
   "Removing…": "O‘chirilmoqda…",
   "Running": "Ishlamoqda",
-  "Running · using %1 GB": "Ishlamoqda · %1 GB ishlatmoqda",
+  "Using %1 GB RAM": "%1 GB RAM ishlatmoqda",
   "Start": "Ishga tushirish",
   "Stop": "To‘xtatish",
   "Stopping…": "To‘xtatilmoqda…",

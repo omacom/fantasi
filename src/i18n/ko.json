@@ -149,7 +149,7 @@
   "Remove %1?": "%1을(를) 삭제할까요?",
   "Removing…": "삭제 중…",
   "Running": "실행 중",
-  "Running · using %1 GB": "실행 중 · %1 GB 사용",
+  "Using %1 GB RAM": "%1 GB RAM 사용 중",
   "Start": "시작",
   "Stop": "중지",
   "Stopping…": "중지하는 중…",

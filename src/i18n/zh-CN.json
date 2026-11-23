@@ -149,7 +149,7 @@
   "Remove %1?": "移除 %1？",
   "Removing…": "正在移除…",
   "Running": "运行中",
-  "Running · using %1 GB": "运行中 · 占用 %1 GB",
+  "Using %1 GB RAM": "占用 %1 GB 内存",
   "Start": "启动",
   "Stop": "停止",
   "Stopping…": "正在停止…",

@@ -149,7 +149,7 @@
   "Remove %1?": "%1 を削除しますか？",
   "Removing…": "削除中…",
   "Running": "実行中",
-  "Running · using %1 GB": "実行中 · %1 GB 使用",
+  "Using %1 GB RAM": "%1 GB のメモリを使用中",
   "Start": "起動",
   "Stop": "停止",
   "Stopping…": "停止中…",

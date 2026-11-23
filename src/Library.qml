@@ -84,7 +84,7 @@ Popup {
     // What a row says under its name.
     function detail(row) {
         switch (row.state) {
-        case "running": return row.held > 0 ? qsTr("Running · using %1 GB").arg(gb(row.held)) : qsTr("Running")
+        case "running": return row.held > 0 ? qsTr("Using %1 GB RAM").arg(gb(row.held)) : qsTr("Running")
         case "starting": return qsTr("Starting…")
         case "stopping": return qsTr("Stopping…")
         case "removing": return qsTr("Removing…")

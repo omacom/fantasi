@@ -149,7 +149,7 @@
   "Remove %1?": "ลบ %1 หรือไม่?",
   "Removing…": "กำลังลบ…",
   "Running": "กำลังทำงาน",
-  "Running · using %1 GB": "กำลังทำงาน · ใช้ %1 GB",
+  "Using %1 GB RAM": "ใช้ RAM %1 GB",
   "Start": "เริ่ม",
   "Stop": "หยุด",
   "Stopping…": "กำลังหยุด…",
