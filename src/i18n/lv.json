@@ -144,7 +144,7 @@
   "Make room and start": "Atbrīvot vietu un palaist",
   "Models": "Modeļi",
   "Needs %1 GB of memory, and this machine has %2 GB": "Nepieciešami %1 GB atmiņas, bet šai ierīcei ir %2 GB",
-  "Needs %1 GB · %2 GB free": "Nepieciešami %1 GB · %2 GB brīvi",
+  "Needs %1 GB RAM (%2 GB is free)": "Nepieciešami %1 GB RAM (%2 GB ir brīvi)",
   "Not for this machine": "Nav paredzēts šai ierīcei",
   "Not made for this machine's graphics yet": "Vēl nav pielāgots šīs ierīces grafikai",
   "Remove": "Noņemt",

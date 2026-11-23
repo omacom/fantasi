@@ -142,7 +142,7 @@
   "Make room and start": "腾出空间并启动",
   "Models": "模型",
   "Needs %1 GB of memory, and this machine has %2 GB": "需要 %1 GB 内存，而这台设备只有 %2 GB",
-  "Needs %1 GB · %2 GB free": "需要 %1 GB · 可用 %2 GB",
+  "Needs %1 GB RAM (%2 GB is free)": "需要 %1 GB 内存（可用 %2 GB）",
   "Not for this machine": "不适用于这台设备",
   "Not made for this machine's graphics yet": "尚不支持这台设备的显卡",
   "Remove": "移除",

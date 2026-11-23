@@ -143,7 +143,7 @@
   "Make room and start": "Magbakante at simulan",
   "Models": "Mga model",
   "Needs %1 GB of memory, and this machine has %2 GB": "Kailangan ng %1 GB na memory, at %2 GB ang meron ang makinang ito",
-  "Needs %1 GB · %2 GB free": "Kailangan ng %1 GB · %2 GB ang libre",
+  "Needs %1 GB RAM (%2 GB is free)": "Kailangan ng %1 GB RAM (%2 GB ang libre)",
   "Not for this machine": "Hindi para sa makinang ito",
   "Not made for this machine's graphics yet": "Hindi pa ito ginawa para sa graphics ng makinang ito",
   "Remove": "Alisin",

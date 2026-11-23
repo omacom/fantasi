@@ -143,7 +143,7 @@
   "Make room and start": "Δημιουργία χώρου και εκκίνηση",
   "Models": "Μοντέλα",
   "Needs %1 GB of memory, and this machine has %2 GB": "Χρειάζεται %1 GB μνήμης και αυτό το μηχάνημα έχει %2 GB",
-  "Needs %1 GB · %2 GB free": "Χρειάζεται %1 GB · %2 GB ελεύθερα",
+  "Needs %1 GB RAM (%2 GB is free)": "Χρειάζεται %1 GB RAM (%2 GB είναι ελεύθερα)",
   "Not for this machine": "Όχι για αυτό το μηχάνημα",
   "Not made for this machine's graphics yet": "Δεν έχει φτιαχτεί ακόμα για τα γραφικά αυτού του μηχανήματος",
   "Remove": "Αφαίρεση",

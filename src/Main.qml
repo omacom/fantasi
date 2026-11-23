@@ -136,7 +136,7 @@ ApplicationWindow {
         if (!row || !(row.needs > 0) || !(models.memoryTotal > 0))
             return ""
         const gb = value => Number(value).toLocaleString(Qt.locale(translator.language), 'f', 0)
-        return qsTr("Needs %1 GB · %2 GB free").arg(gb(row.needs)).arg(gb(models.memoryFree))
+        return qsTr("Needs %1 GB RAM (%2 GB is free)").arg(gb(row.needs)).arg(gb(Math.floor(models.memoryFree)))
     }
     readonly property string wakeText: models.state === "blocked"
         ? qsTr("Stop %1 and start %2").arg(models.blockers.join(", ")).arg(models.modelName)

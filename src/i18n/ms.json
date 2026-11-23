@@ -142,7 +142,7 @@
   "Make room and start": "Kosongkan ruang dan mulakan",
   "Models": "Model",
   "Needs %1 GB of memory, and this machine has %2 GB": "Memerlukan %1 GB memori, dan mesin ini mempunyai %2 GB",
-  "Needs %1 GB · %2 GB free": "Perlu %1 GB · %2 GB bebas",
+  "Needs %1 GB RAM (%2 GB is free)": "Perlu %1 GB RAM (%2 GB bebas)",
   "Not for this machine": "Bukan untuk mesin ini",
   "Not made for this machine's graphics yet": "Belum dibuat untuk grafik mesin ini",
   "Remove": "Buang",

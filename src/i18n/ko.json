@@ -142,7 +142,7 @@
   "Make room and start": "공간 확보 후 시작",
   "Models": "모델",
   "Needs %1 GB of memory, and this machine has %2 GB": "메모리 %1 GB가 필요하지만 이 기기에는 %2 GB가 있습니다",
-  "Needs %1 GB · %2 GB free": "%1 GB 필요 · %2 GB 사용 가능",
+  "Needs %1 GB RAM (%2 GB is free)": "%1 GB RAM 필요 (%2 GB 사용 가능)",
   "Not for this machine": "이 기기용이 아님",
   "Not made for this machine's graphics yet": "이 기기의 그래픽은 아직 지원되지 않습니다",
   "Remove": "삭제",

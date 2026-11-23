@@ -143,7 +143,7 @@
   "Make room and start": "جا باز کن و اجرا کن",
   "Models": "مدل‌ها",
   "Needs %1 GB of memory, and this machine has %2 GB": "به %1 GB حافظه نیاز دارد و این دستگاه %2 GB دارد",
-  "Needs %1 GB · %2 GB free": "به %1 GB نیاز دارد · %2 GB آزاد",
+  "Needs %1 GB RAM (%2 GB is free)": "به %1 GB رم نیاز دارد (%2 GB آزاد است)",
   "Not for this machine": "برای این دستگاه نیست",
   "Not made for this machine's graphics yet": "هنوز برای گرافیک این دستگاه ساخته نشده",
   "Remove": "حذف",

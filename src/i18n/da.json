@@ -143,7 +143,7 @@
   "Make room and start": "Frigør plads og start",
   "Models": "Modeller",
   "Needs %1 GB of memory, and this machine has %2 GB": "Kræver %1 GB hukommelse, og denne maskine har %2 GB",
-  "Needs %1 GB · %2 GB free": "Kræver %1 GB · %2 GB ledig",
+  "Needs %1 GB RAM (%2 GB is free)": "Kræver %1 GB RAM (%2 GB er ledig)",
   "Not for this machine": "Ikke til denne maskine",
   "Not made for this machine's graphics yet": "Endnu ikke lavet til denne maskines grafik",
   "Remove": "Fjern",

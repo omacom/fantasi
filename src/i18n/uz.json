@@ -143,7 +143,7 @@
   "Make room and start": "Joy ochib, ishga tushirish",
   "Models": "Modellar",
   "Needs %1 GB of memory, and this machine has %2 GB": "%1 GB xotira kerak, bu qurilmada esa %2 GB bor",
-  "Needs %1 GB · %2 GB free": "%1 GB kerak · %2 GB bo‘sh",
+  "Needs %1 GB RAM (%2 GB is free)": "%1 GB RAM kerak (%2 GB bo‘sh)",
   "Not for this machine": "Bu qurilma uchun emas",
   "Not made for this machine's graphics yet": "Bu qurilmaning grafikasi uchun hali yaratilmagan",
   "Remove": "O‘chirish",

@@ -143,7 +143,7 @@
   "Make room and start": "Yer aç ve başlat",
   "Models": "Modeller",
   "Needs %1 GB of memory, and this machine has %2 GB": "%1 GB bellek gerekiyor, bu makinede %2 GB var",
-  "Needs %1 GB · %2 GB free": "%1 GB gerekli · %2 GB boş",
+  "Needs %1 GB RAM (%2 GB is free)": "%1 GB RAM gerekli (%2 GB boş)",
   "Not for this machine": "Bu makine için değil",
   "Not made for this machine's graphics yet": "Bu makinenin grafikleri için henüz yapılmadı",
   "Remove": "Kaldır",

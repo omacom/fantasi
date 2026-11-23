@@ -61,7 +61,7 @@ Popup {
         return (room.length === 1 ? qsTr("%1 is using %2 GB") : qsTr("%1 are using %2 GB")).arg(names(room)).arg(gb(gib))
     }
     function needLine(row) {
-        return qsTr("Needs %1 GB · %2 GB free").arg(gb(row.needs)).arg(gb(models.memoryFree))
+        return qsTr("Needs %1 GB RAM (%2 GB is free)").arg(gb(row.needs)).arg(gb(Math.floor(models.memoryFree)))
     }
     // The engine's reason a model isn't for this machine, said plainly.
     function why(reason) {

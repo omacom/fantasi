@@ -142,7 +142,7 @@
   "Make room and start": "空きを作って起動",
   "Models": "モデル",
   "Needs %1 GB of memory, and this machine has %2 GB": "%1 GB のメモリが必要です。このマシンには %2 GB あります",
-  "Needs %1 GB · %2 GB free": "%1 GB 必要 · %2 GB 空き",
+  "Needs %1 GB RAM (%2 GB is free)": "%1 GB のメモリが必要（%2 GB 空き）",
   "Not for this machine": "このマシンには非対応",
   "Not made for this machine's graphics yet": "このマシンのグラフィックスにはまだ対応していません",
   "Remove": "削除",

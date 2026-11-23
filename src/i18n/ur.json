@@ -143,7 +143,7 @@
   "Make room and start": "جگہ بنائیں اور شروع کریں",
   "Models": "ماڈلز",
   "Needs %1 GB of memory, and this machine has %2 GB": "%1 GB میموری درکار ہے، اور اس مشین میں %2 GB ہے",
-  "Needs %1 GB · %2 GB free": "%1 GB درکار · %2 GB خالی",
+  "Needs %1 GB RAM (%2 GB is free)": "%1 GB RAM درکار (%2 GB خالی ہے)",
   "Not for this machine": "اس مشین کے لیے نہیں",
   "Not made for this machine's graphics yet": "ابھی اس مشین کے گرافکس کے لیے نہیں بنایا گیا",
   "Remove": "ہٹائیں",

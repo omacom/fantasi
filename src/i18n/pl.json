@@ -145,7 +145,7 @@
   "Make room and start": "Zwolnij miejsce i uruchom",
   "Models": "Modele",
   "Needs %1 GB of memory, and this machine has %2 GB": "Wymaga %1 GB pamięci, a ten komputer ma %2 GB",
-  "Needs %1 GB · %2 GB free": "Wymaga %1 GB · %2 GB wolne",
+  "Needs %1 GB RAM (%2 GB is free)": "Wymaga %1 GB RAM (%2 GB wolne)",
   "Not for this machine": "Nie dla tego komputera",
   "Not made for this machine's graphics yet": "Jeszcze nie przygotowany dla grafiki tego komputera",
   "Remove": "Usuń",

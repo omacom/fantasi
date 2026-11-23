@@ -144,7 +144,7 @@
   "Make room and start": "Uvoľniť miesto a spustiť",
   "Models": "Modely",
   "Needs %1 GB of memory, and this machine has %2 GB": "Potrebuje %1 GB pamäte a tento počítač má %2 GB",
-  "Needs %1 GB · %2 GB free": "Potrebuje %1 GB · %2 GB voľných",
+  "Needs %1 GB RAM (%2 GB is free)": "Potrebuje %1 GB RAM (%2 GB je voľných)",
   "Not for this machine": "Nie pre tento počítač",
   "Not made for this machine's graphics yet": "Zatiaľ nie je určené pre grafiku tohto počítača",
   "Remove": "Odstrániť",

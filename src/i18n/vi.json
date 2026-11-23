@@ -142,7 +142,7 @@
   "Make room and start": "Dọn chỗ và khởi động",
   "Models": "Mô hình",
   "Needs %1 GB of memory, and this machine has %2 GB": "Cần %1 GB bộ nhớ, máy này có %2 GB",
-  "Needs %1 GB · %2 GB free": "Cần %1 GB · trống %2 GB",
+  "Needs %1 GB RAM (%2 GB is free)": "Cần %1 GB RAM (trống %2 GB)",
   "Not for this machine": "Không dành cho máy này",
   "Not made for this machine's graphics yet": "Chưa hỗ trợ card đồ họa của máy này",
   "Remove": "Gỡ",

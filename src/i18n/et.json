@@ -143,7 +143,7 @@
   "Make room and start": "Tee ruumi ja käivita",
   "Models": "Mudelid",
   "Needs %1 GB of memory, and this machine has %2 GB": "Vajab %1 GB mälu, sellel arvutil on %2 GB",
-  "Needs %1 GB · %2 GB free": "Vajab %1 GB · %2 GB vaba",
+  "Needs %1 GB RAM (%2 GB is free)": "Vajab %1 GB RAM-i (%2 GB on vaba)",
   "Not for this machine": "Pole sellele arvutile",
   "Not made for this machine's graphics yet": "Pole veel selle arvuti graafikale tehtud",
   "Remove": "Eemalda",

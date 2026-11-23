@@ -145,7 +145,7 @@
   "Make room and start": "Звільнити місце й запустити",
   "Models": "Моделі",
   "Needs %1 GB of memory, and this machine has %2 GB": "Потрібно %1 GB пам’яті, а на цьому комп’ютері %2 GB",
-  "Needs %1 GB · %2 GB free": "Потрібно %1 GB · вільно %2 GB",
+  "Needs %1 GB RAM (%2 GB is free)": "Потрібно %1 GB ОЗП (вільно %2 GB)",
   "Not for this machine": "Не для цього комп’ютера",
   "Not made for this machine's graphics yet": "Ще не зроблено для графіки цього комп’ютера",
   "Remove": "Видалити",

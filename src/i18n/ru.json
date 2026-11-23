@@ -145,7 +145,7 @@
   "Make room and start": "Освободить память и запустить",
   "Models": "Модели",
   "Needs %1 GB of memory, and this machine has %2 GB": "Нужно %1 GB памяти, а на этом компьютере %2 GB",
-  "Needs %1 GB · %2 GB free": "Нужно %1 GB · свободно %2 GB",
+  "Needs %1 GB RAM (%2 GB is free)": "Нужно %1 GB ОЗУ (свободно %2 GB)",
   "Not for this machine": "Не для этого компьютера",
   "Not made for this machine's graphics yet": "Пока не рассчитана на графику этого компьютера",
   "Remove": "Удалить",
