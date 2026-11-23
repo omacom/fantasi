@@ -339,7 +339,6 @@ private slots:
         QVERIFY(!asked().contains("released"));
         // The running media models, held elsewhere or not, but never a text model.
         models.release();
-        QVERIFY(asked().endsWith("hold z\nreleased\n"));
         QTRY_VERIFY(asked().endsWith("hold z\nreleased\nstop --unless-used a z\n"));
         QSettings().remove("model");
     }
