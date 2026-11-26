@@ -2,5 +2,17 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
+
+# What it takes to build, installed first if any is missing. pacman -T prints
+# only the packages that aren't installed, so this is quiet once they all are.
+packages=(cmake gcc make qt6-base qt6-declarative qt6-shadertools)
+if command -v pacman >/dev/null; then
+  mapfile -t missing < <(pacman -T "${packages[@]}" || true)
+  if ((${#missing[@]})); then
+    echo "Installing ${missing[*]} to build Fantasi"
+    sudo pacman -S --noconfirm --needed "${missing[@]}"
+  fi
+fi
+
 cmake -S "$root" -B "$root/build" -DCMAKE_BUILD_TYPE=Release >/dev/null
 cmake --build "$root/build" -j"$(nproc)"

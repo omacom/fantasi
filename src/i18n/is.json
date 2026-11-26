@@ -116,7 +116,6 @@
   "Pick something to make first": "Veldu fyrst hvað á að búa til",
   "%1 of %2": "%1 af %2",
   "%1/s": "%1/s",
-  "less than a minute left": "innan við mínúta eftir",
   "Download": "Niðurhal",
   "Ready": "Tilbúið",
   "Try again": "Reyna aftur",
@@ -157,5 +156,6 @@
   "Update": "Uppfæra",
   "Updating…": "Uppfæri…",
   "Use": "Nota",
-  "Remove %1 and free about %2?": "Fjarlægja %1 og losa um %2?"
+  "Remove %1 and free about %2?": "Fjarlægja %1 og losa um %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Ekki náðist samband við netið. Athugaðu tenginguna og reyndu aftur."
 }

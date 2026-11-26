@@ -116,7 +116,6 @@
   "Pick something to make first": "Prima scegli cosa creare",
   "%1 of %2": "%1 di %2",
   "%1/s": "%1/s",
-  "less than a minute left": "manca meno di un minuto",
   "Download": "Download",
   "Ready": "Pronto",
   "Try again": "Riprova",
@@ -158,5 +157,6 @@
   "Update": "Aggiorna",
   "Updating…": "Aggiornamento…",
   "Use": "Usa",
-  "Remove %1 and free about %2?": "Rimuovere %1 e liberare circa %2?"
+  "Remove %1 and free about %2?": "Rimuovere %1 e liberare circa %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Impossibile raggiungere Internet. Controlla la connessione e riprova."
 }

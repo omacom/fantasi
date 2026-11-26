@@ -116,7 +116,6 @@
   "Pick something to make first": "Velg først hva du vil lage",
   "%1 of %2": "%1 av %2",
   "%1/s": "%1/s",
-  "less than a minute left": "under ett minutt igjen",
   "Download": "Nedlasting",
   "Ready": "Klar",
   "Try again": "Prøv igjen",
@@ -157,5 +156,6 @@
   "Update": "Oppdater",
   "Updating…": "Oppdaterer…",
   "Use": "Bruk",
-  "Remove %1 and free about %2?": "Fjerne %1 og frigjøre omtrent %2?"
+  "Remove %1 and free about %2?": "Fjerne %1 og frigjøre omtrent %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Fikk ikke kontakt med internett. Sjekk tilkoblingen og prøv igjen."
 }

@@ -116,7 +116,6 @@
   "Pick something to make first": "Előbb válaszd ki, mit készítesz",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/mp",
-  "less than a minute left": "kevesebb mint egy perc van hátra",
   "Download": "Letöltés",
   "Ready": "Kész",
   "Try again": "Újra",
@@ -157,5 +156,6 @@
   "Update": "Frissítés",
   "Updating…": "Frissítés…",
   "Use": "Használat",
-  "Remove %1 and free about %2?": "Eltávolítod: %1, és felszabadítasz kb. %2-ot?"
+  "Remove %1 and free about %2?": "Eltávolítod: %1, és felszabadítasz kb. %2-ot?",
+  "Couldn't reach the internet. Check the connection and try again.": "Nem sikerült elérni az internetet. Ellenőrizd a kapcsolatot, és próbáld újra."
 }

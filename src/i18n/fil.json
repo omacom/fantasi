@@ -116,7 +116,6 @@
   "Pick something to make first": "Pumili muna ng gagawin",
   "%1 of %2": "%1 sa %2",
   "%1/s": "%1/s",
-  "less than a minute left": "wala nang isang minuto",
   "Download": "Download",
   "Ready": "Handa na",
   "Try again": "Subukan ulit",
@@ -157,5 +156,6 @@
   "Update": "I-update",
   "Updating…": "Ina-update…",
   "Use": "Gamitin",
-  "Remove %1 and free about %2?": "Alisin ang %1 at magbakante ng humigit-kumulang %2?"
+  "Remove %1 and free about %2?": "Alisin ang %1 at magbakante ng humigit-kumulang %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Hindi maabot ang internet. Tingnan ang koneksyon at subukang muli."
 }

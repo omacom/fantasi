@@ -116,7 +116,6 @@
   "Pick something to make first": "पहले चुनें कि क्या बनाना है",
   "%1 of %2": "%2 में से %1",
   "%1/s": "%1/s",
-  "less than a minute left": "एक मिनट से कम बाकी",
   "Download": "डाउनलोड",
   "Ready": "तैयार",
   "Try again": "फिर से कोशिश करें",
@@ -157,5 +156,6 @@
   "Update": "अपडेट करें",
   "Updating…": "अपडेट हो रहा है…",
   "Use": "इस्तेमाल करें",
-  "Remove %1 and free about %2?": "%1 हटाएँ और लगभग %2 खाली करें?"
+  "Remove %1 and free about %2?": "%1 हटाएँ और लगभग %2 खाली करें?",
+  "Couldn't reach the internet. Check the connection and try again.": "इंटरनेट से कनेक्ट नहीं हो सका। कनेक्शन जांचें और फिर से कोशिश करें।"
 }

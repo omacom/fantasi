@@ -116,7 +116,6 @@
   "Pick something to make first": "먼저 만들 항목을 고르세요",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "1분 미만 남음",
   "Download": "다운로드",
   "Ready": "준비됨",
   "Try again": "다시 시도",
@@ -156,5 +155,6 @@
   "Update": "업데이트",
   "Updating…": "업데이트하는 중…",
   "Use": "사용",
-  "Remove %1 and free about %2?": "%1을(를) 삭제하고 약 %2를 확보할까요?"
+  "Remove %1 and free about %2?": "%1을(를) 삭제하고 약 %2를 확보할까요?",
+  "Couldn't reach the internet. Check the connection and try again.": "인터넷에 연결할 수 없습니다. 연결을 확인하고 다시 시도하세요."
 }

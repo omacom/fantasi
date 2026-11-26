@@ -116,7 +116,6 @@
   "Pick something to make first": "Kies eerst wat je wilt maken",
   "%1 of %2": "%1 van %2",
   "%1/s": "%1/s",
-  "less than a minute left": "minder dan een minuut te gaan",
   "Download": "Download",
   "Ready": "Klaar",
   "Try again": "Opnieuw proberen",
@@ -157,5 +156,6 @@
   "Update": "Bijwerken",
   "Updating…": "Bijwerken…",
   "Use": "Gebruiken",
-  "Remove %1 and free about %2?": "%1 verwijderen en ongeveer %2 vrijmaken?"
+  "Remove %1 and free about %2?": "%1 verwijderen en ongeveer %2 vrijmaken?",
+  "Couldn't reach the internet. Check the connection and try again.": "Kan internet niet bereiken. Controleer de verbinding en probeer het opnieuw."
 }

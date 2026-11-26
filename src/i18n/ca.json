@@ -116,7 +116,6 @@
   "Pick something to make first": "Primer tria què vols crear",
   "%1 of %2": "%1 de %2",
   "%1/s": "%1/s",
-  "less than a minute left": "queda menys d'un minut",
   "Download": "Baixada",
   "Ready": "A punt",
   "Try again": "Torna-ho a provar",
@@ -158,5 +157,6 @@
   "Update": "Actualitza",
   "Updating…": "Actualitzant…",
   "Use": "Utilitza",
-  "Remove %1 and free about %2?": "Vols eliminar %1 i alliberar uns %2?"
+  "Remove %1 and free about %2?": "Vols eliminar %1 i alliberar uns %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "No s'ha pogut connectar a internet. Comproveu la connexió i torneu-ho a provar."
 }

@@ -41,7 +41,8 @@ Item {
         if (offer.rateBytes > 0) {
             parts.push(qsTr("%1/s").arg(size(offer.rateBytes)))
             const minutes = Math.round((offer.totalBytes - offer.doneBytes) / offer.rateBytes / 60)
-            parts.push(minutes >= 1 ? qsTr("about %Ln minutes left", "", minutes) : qsTr("less than a minute left"))
+            if (minutes >= 1)
+                parts.push(qsTr("about %Ln minutes left", "", minutes))
         }
         return parts.join(" · ")
     }
@@ -106,7 +107,10 @@ Item {
                         readonly property bool working: ["waiting", "downloading", "starting"].indexOf(phase) >= 0
                         objectName: "offer-" + offer.kind
                         Layout.preferredWidth: root.cardWidth
-                        Layout.preferredHeight: cards.columns > 1 ? 290 : implicitHeight
+                        // Side by side, as tall as the tallest in the row, and never
+                        // shorter than 290 so the buttons line up.
+                        Layout.preferredHeight: cards.columns > 1 ? Math.max(290, implicitHeight) : implicitHeight
+                        Layout.fillHeight: cards.columns > 1
                         implicitHeight: content.implicitHeight + 44
                         radius: theme.radius
                         color: Qt.rgba(theme.background.r, theme.background.g, theme.background.b, 0.85)
@@ -219,7 +223,9 @@ Item {
                             Label {
                                 visible: card.phase === "failed" && card.offer.error !== ""
                                 Layout.fillWidth: true
-                                wrapMode: Text.WordWrap
+                                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                                maximumLineCount: 4
+                                elide: Text.ElideRight
                                 font.pixelSize: 12
                                 color: theme.colors.red || theme.foreground
                                 text: card.offer.error || ""

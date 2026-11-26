@@ -116,7 +116,6 @@
   "Pick something to make first": "Najprv vyberte, čo chcete vytvoriť",
   "%1 of %2": "%1 z %2",
   "%1/s": "%1/s",
-  "less than a minute left": "zostáva menej ako minúta",
   "Download": "Stiahnutie",
   "Ready": "Pripravené",
   "Try again": "Skúsiť znova",
@@ -158,5 +157,6 @@
   "Update": "Aktualizovať",
   "Updating…": "Aktualizuje sa…",
   "Use": "Použiť",
-  "Remove %1 and free about %2?": "Odstrániť %1 a uvoľniť približne %2?"
+  "Remove %1 and free about %2?": "Odstrániť %1 a uvoľniť približne %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Nepodarilo sa pripojiť k internetu. Skontrolujte pripojenie a skúste to znova."
 }

@@ -116,7 +116,6 @@
   "Pick something to make first": "Επιλέξτε πρώτα τι θα δημιουργήσετε",
   "%1 of %2": "%1 από %2",
   "%1/s": "%1/s",
-  "less than a minute left": "απομένει λιγότερο από ένα λεπτό",
   "Download": "Λήψη",
   "Ready": "Έτοιμο",
   "Try again": "Δοκιμάστε ξανά",
@@ -157,5 +156,6 @@
   "Update": "Ενημέρωση",
   "Updating…": "Ενημέρωση…",
   "Use": "Χρήση",
-  "Remove %1 and free about %2?": "Αφαίρεση του %1 και απελευθέρωση περίπου %2;"
+  "Remove %1 and free about %2?": "Αφαίρεση του %1 και απελευθέρωση περίπου %2;",
+  "Couldn't reach the internet. Check the connection and try again.": "Δεν ήταν δυνατή η σύνδεση στο διαδίκτυο. Ελέγξτε τη σύνδεση και δοκιμάστε ξανά."
 }

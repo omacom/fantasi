@@ -116,7 +116,6 @@
   "Pick something to make first": "בחרו קודם מה ליצור",
   "%1 of %2": "%1 מתוך %2",
   "%1/s": "%1/s",
-  "less than a minute left": "נותרה פחות מדקה",
   "Download": "הורדה",
   "Ready": "מוכן",
   "Try again": "ניסיון חוזר",
@@ -158,5 +157,6 @@
   "Update": "עדכון",
   "Updating…": "מעדכן…",
   "Use": "שימוש",
-  "Remove %1 and free about %2?": "להסיר את %1 ולפנות כ-%2?"
+  "Remove %1 and free about %2?": "להסיר את %1 ולפנות כ-%2?",
+  "Couldn't reach the internet. Check the connection and try again.": "לא ניתן להתחבר לאינטרנט. בדקו את החיבור ונסו שוב."
 }

@@ -19,6 +19,17 @@ QJsonDocument readJson(const QString &path) {
     return file.open(QIODevice::ReadOnly) ? QJsonDocument::fromJson(file.readAll()) : QJsonDocument();
 }
 
+// The engine's error, said plainly when it's the network that failed: a
+// download that can't reach Hugging Face reads as Python's urllib otherwise.
+QString plainError(const QString &error) {
+    static const QRegularExpression offline(
+        "urlopen error|name resolution|Name or service not known|Network is unreachable|Connection (refused|reset)|timed out",
+        QRegularExpression::CaseInsensitiveOption);
+    if (offline.match(error).hasMatch())
+        return Models::tr("Couldn't reach the internet. Check the connection and try again.");
+    return error;
+}
+
 bool isImage(const QJsonObject &row) { return row.value("kind").toString() == "image"; }
 
 // What Fantasi makes things with: a video or music model is chosen like an
@@ -181,7 +192,7 @@ Models::Discovery Models::discover(const QJsonObject &status, const QJsonArray &
                 found.doneBytes = install.value("done_bytes").toInteger();
                 found.totalBytes = install.value("total_bytes").toInteger();
                 found.rateBytes = install.value("rate_bytes_s").toInteger();
-                const QString error = row.value("error").toString();
+                const QString error = plainError(row.value("error").toString());
                 found.setupPhase = !error.isEmpty() ? "failed" : install.value("phase").toString("waiting");
                 found.reason = error;
             } else if (found.state == "starting") {
@@ -333,7 +344,7 @@ QVariantMap Models::libraryFrom(const QJsonObject &status, const QJsonArray &lis
     auto addRow = [&](const QString &id, const QJsonObject &model, const QJsonObject &recipe) {
         const QString kind = model.value("kind").toString(recipe.value("kind").toString());
         const QString unit = model.value("unit").toString();
-        const QString error = model.value("error").toString();
+        const QString error = plainError(model.value("error").toString());
         const QJsonObject update = model.value("update").toObject();
         const bool updating = model.value("updating").toBool();
         const QJsonObject progress = (unit == "installing" ? model.value("install") : model.value("update_progress")).toObject();
@@ -454,7 +465,7 @@ QVariantList Models::offersFrom(const QJsonObject &status, const QJsonArray &lis
         const QJsonObject model = models.value(id).toObject();
         const QJsonObject install = model.value("install").toObject();
         const QString unit = model.value("unit").toString();
-        const QString error = model.value("error").toString();
+        const QString error = plainError(model.value("error").toString());
         QString phase = "offer";
         if (unit == "installing")
             phase = !error.isEmpty() ? "failed" : install.value("phase").toString("waiting");

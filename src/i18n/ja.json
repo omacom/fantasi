@@ -116,7 +116,6 @@
   "Pick something to make first": "まず作るものを選んでください",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "残り 1 分未満",
   "Download": "ダウンロード",
   "Ready": "準備完了",
   "Try again": "もう一度試す",
@@ -156,5 +155,6 @@
   "Update": "更新",
   "Updating…": "更新中…",
   "Use": "使う",
-  "Remove %1 and free about %2?": "%1 を削除して約 %2 を空けますか？"
+  "Remove %1 and free about %2?": "%1 を削除して約 %2 を空けますか？",
+  "Couldn't reach the internet. Check the connection and try again.": "インターネットに接続できませんでした。接続を確認して、もう一度お試しください。"
 }

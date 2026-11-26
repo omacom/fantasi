@@ -116,7 +116,6 @@
   "Pick something to make first": "පළමුව සෑදිය යුත්තේ කුමක්දැයි තෝරන්න",
   "%1 of %2": "%2 න් %1",
   "%1/s": "%1/s",
-  "less than a minute left": "විනාඩියකටත් අඩුවෙන් ඉතිරියි",
   "Download": "බාගැනීම",
   "Ready": "සූදානම්",
   "Try again": "නැවත උත්සාහ කරන්න",
@@ -157,5 +156,6 @@
   "Update": "යාවත්කාලීන කරන්න",
   "Updating…": "යාවත්කාලීන කරමින්…",
   "Use": "භාවිතා කරන්න",
-  "Remove %1 and free about %2?": "%1 ඉවත් කර %2 ක් පමණ නිදහස් කරන්නද?"
+  "Remove %1 and free about %2?": "%1 ඉවත් කර %2 ක් පමණ නිදහස් කරන්නද?",
+  "Couldn't reach the internet. Check the connection and try again.": "අන්තර්ජාලයට සම්බන්ධ විය නොහැකි විය. සම්බන්ධතාවය පරීක්ෂා කර නැවත උත්සාහ කරන්න."
 }

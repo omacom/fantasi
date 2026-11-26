@@ -116,7 +116,6 @@
   "Pick something to make first": "Alege mai întâi ce să creezi",
   "%1 of %2": "%1 din %2",
   "%1/s": "%1/s",
-  "less than a minute left": "mai puțin de un minut rămas",
   "Download": "Descărcare",
   "Ready": "Gata",
   "Try again": "Încearcă din nou",
@@ -158,5 +157,6 @@
   "Update": "Actualizează",
   "Updating…": "Se actualizează…",
   "Use": "Folosește",
-  "Remove %1 and free about %2?": "Elimini %1 și eliberezi aproximativ %2?"
+  "Remove %1 and free about %2?": "Elimini %1 și eliberezi aproximativ %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Internetul nu poate fi accesat. Verifică conexiunea și încearcă din nou."
 }

@@ -116,7 +116,6 @@
   "Pick something to make first": "Roghnaigh rud le déanamh ar dtús",
   "%1 of %2": "%1 as %2",
   "%1/s": "%1/s",
-  "less than a minute left": "níos lú ná nóiméad fágtha",
   "Download": "Íoslódáil",
   "Ready": "Réidh",
   "Try again": "Bain triail eile as",
@@ -160,5 +159,6 @@
   "Update": "Nuashonraigh",
   "Updating…": "Á nuashonrú…",
   "Use": "Úsáid",
-  "Remove %1 and free about %2?": "Bain %1 agus saor thart ar %2?"
+  "Remove %1 and free about %2?": "Bain %1 agus saor thart ar %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Níorbh fhéidir an t-idirlíon a bhaint amach. Seiceáil an ceangal agus bain triail eile as."
 }

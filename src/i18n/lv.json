@@ -116,7 +116,6 @@
   "Pick something to make first": "Vispirms izvēlieties, ko veidot",
   "%1 of %2": "%1 no %2",
   "%1/s": "%1/s",
-  "less than a minute left": "atlikusi mazāk nekā minūte",
   "Download": "Lejupielāde",
   "Ready": "Gatavs",
   "Try again": "Mēģināt vēlreiz",
@@ -158,5 +157,6 @@
   "Update": "Atjaunināt",
   "Updating…": "Atjaunina…",
   "Use": "Izmantot",
-  "Remove %1 and free about %2?": "Noņemt %1 un atbrīvot aptuveni %2?"
+  "Remove %1 and free about %2?": "Noņemt %1 un atbrīvot aptuveni %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Neizdevās sasniegt internetu. Pārbaudiet savienojumu un mēģiniet vēlreiz."
 }

@@ -116,7 +116,6 @@
   "Pick something to make first": "Välj först vad du vill skapa",
   "%1 of %2": "%1 av %2",
   "%1/s": "%1/s",
-  "less than a minute left": "mindre än en minut kvar",
   "Download": "Nedladdning",
   "Ready": "Redo",
   "Try again": "Försök igen",
@@ -157,5 +156,6 @@
   "Update": "Uppdatera",
   "Updating…": "Uppdaterar…",
   "Use": "Använd",
-  "Remove %1 and free about %2?": "Ta bort %1 och frigöra cirka %2?"
+  "Remove %1 and free about %2?": "Ta bort %1 och frigöra cirka %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Det gick inte att nå internet. Kontrollera anslutningen och försök igen."
 }
