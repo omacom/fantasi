@@ -116,7 +116,6 @@
   "Pick something to make first": "Najprej izberite, kaj boste ustvarili",
   "%1 of %2": "%1 od %2",
   "%1/s": "%1/s",
-  "less than a minute left": "ostala je manj kot minuta",
   "Download": "Prenos",
   "Ready": "Pripravljeno",
   "Try again": "Poskusi znova",
@@ -159,5 +158,6 @@
   "Update": "Posodobi",
   "Updating…": "Posodabljanje …",
   "Use": "Uporabi",
-  "Remove %1 and free about %2?": "Odstranim %1 in sprostim približno %2?"
+  "Remove %1 and free about %2?": "Odstranim %1 in sprostim približno %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Interneta ni bilo mogoče doseči. Preverite povezavo in poskusite znova."
 }

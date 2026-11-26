@@ -116,7 +116,6 @@
   "Pick something to make first": "Vali enne, mida teha",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "jäänud alla minuti",
   "Download": "Allalaadimine",
   "Ready": "Valmis",
   "Try again": "Proovi uuesti",
@@ -157,5 +156,6 @@
   "Update": "Uuenda",
   "Updating…": "Uuendamine…",
   "Use": "Kasuta",
-  "Remove %1 and free about %2?": "Eemaldada %1 ja vabastada umbes %2?"
+  "Remove %1 and free about %2?": "Eemaldada %1 ja vabastada umbes %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Internetiga ei saanud ühendust. Kontrolli ühendust ja proovi uuesti."
 }

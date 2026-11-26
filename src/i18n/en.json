@@ -67,7 +67,6 @@
   "Only a model that edits can combine pictures": "Only a model that edits can combine pictures",
   "%1 of %2": "%1 of %2",
   "%1/s": "%1/s",
-  "less than a minute left": "less than a minute left",
   "Download": "Download",
   "Ready": "Ready",
   "Try again": "Try again",
@@ -158,5 +157,6 @@
   "Update": "Update",
   "Updating…": "Updating…",
   "Use": "Use",
-  "Remove %1 and free about %2?": "Remove %1 and free about %2?"
+  "Remove %1 and free about %2?": "Remove %1 and free about %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Couldn't reach the internet. Check the connection and try again."
 }

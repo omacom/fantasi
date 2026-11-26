@@ -116,7 +116,6 @@
   "Pick something to make first": "Спершу виберіть, що створити",
   "%1 of %2": "%1 з %2",
   "%1/s": "%1/с",
-  "less than a minute left": "лишилося менше хвилини",
   "Download": "Завантаження",
   "Ready": "Готово",
   "Try again": "Спробувати ще раз",
@@ -159,5 +158,6 @@
   "Update": "Оновити",
   "Updating…": "Оновлення…",
   "Use": "Використати",
-  "Remove %1 and free about %2?": "Видалити %1 і звільнити близько %2?"
+  "Remove %1 and free about %2?": "Видалити %1 і звільнити близько %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Не вдалося підключитися до інтернету. Перевірте з'єднання та спробуйте ще раз."
 }

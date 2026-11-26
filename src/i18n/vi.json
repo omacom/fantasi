@@ -116,7 +116,6 @@
   "Pick something to make first": "Hãy chọn thứ muốn tạo trước",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "còn chưa đến một phút",
   "Download": "Tải xuống",
   "Ready": "Sẵn sàng",
   "Try again": "Thử lại",
@@ -156,5 +155,6 @@
   "Update": "Cập nhật",
   "Updating…": "Đang cập nhật…",
   "Use": "Dùng",
-  "Remove %1 and free about %2?": "Gỡ %1 và giải phóng khoảng %2?"
+  "Remove %1 and free about %2?": "Gỡ %1 và giải phóng khoảng %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Không thể kết nối internet. Hãy kiểm tra kết nối và thử lại."
 }

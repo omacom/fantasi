@@ -116,7 +116,6 @@
   "Pick something to make first": "先选择要创作的内容",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "剩余不到一分钟",
   "Download": "下载",
   "Ready": "就绪",
   "Try again": "重试",
@@ -156,5 +155,6 @@
   "Update": "更新",
   "Updating…": "正在更新…",
   "Use": "使用",
-  "Remove %1 and free about %2?": "移除 %1 并释放约 %2？"
+  "Remove %1 and free about %2?": "移除 %1 并释放约 %2？",
+  "Couldn't reach the internet. Check the connection and try again.": "无法连接到互联网。请检查网络连接后重试。"
 }

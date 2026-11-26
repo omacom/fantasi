@@ -116,7 +116,6 @@
   "Pick something to make first": "Önce ne oluşturacağınızı seçin",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/sn",
-  "less than a minute left": "bir dakikadan az kaldı",
   "Download": "İndirme",
   "Ready": "Hazır",
   "Try again": "Yeniden dene",
@@ -157,5 +156,6 @@
   "Update": "Güncelle",
   "Updating…": "Güncelleniyor…",
   "Use": "Kullan",
-  "Remove %1 and free about %2?": "%1 kaldırılıp yaklaşık %2 boşaltılsın mı?"
+  "Remove %1 and free about %2?": "%1 kaldırılıp yaklaşık %2 boşaltılsın mı?",
+  "Couldn't reach the internet. Check the connection and try again.": "İnternete ulaşılamadı. Bağlantıyı kontrol edip yeniden deneyin."
 }

@@ -116,7 +116,6 @@
   "Pick something to make first": "Chagua cha kutengeneza kwanza",
   "%1 of %2": "%1 kati ya %2",
   "%1/s": "%1/s",
-  "less than a minute left": "chini ya dakika moja imebaki",
   "Download": "Upakuaji",
   "Ready": "Tayari",
   "Try again": "Jaribu tena",
@@ -157,5 +156,6 @@
   "Update": "Sasisha",
   "Updating…": "Inasasisha…",
   "Use": "Tumia",
-  "Remove %1 and free about %2?": "Kuondoa %1 na kuokoa takriban %2?"
+  "Remove %1 and free about %2?": "Kuondoa %1 na kuokoa takriban %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Imeshindwa kufikia intaneti. Angalia muunganisho na ujaribu tena."
 }

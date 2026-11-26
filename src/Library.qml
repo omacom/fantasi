@@ -74,11 +74,8 @@ Popup {
     }
     function progress(row) {
         const parts = [qsTr("%1 of %2").arg(size(row.doneBytes)).arg(size(row.totalBytes))]
-        if (row.rateBytes > 0) {
+        if (row.rateBytes > 0)
             parts.push(qsTr("%1/s").arg(size(row.rateBytes)))
-            const minutes = Math.round((row.totalBytes - row.doneBytes) / row.rateBytes / 60)
-            parts.push(minutes >= 1 ? qsTr("about %Ln minutes left", "", minutes) : qsTr("less than a minute left"))
-        }
         return parts.join(" · ")
     }
     // What a row says under its name.
@@ -305,7 +302,11 @@ Popup {
                                     // Mirrored with the layout, whichever script the text starts in.
                                     horizontalAlignment: Text.AlignLeft
                                     visible: text !== ""
-                                    wrapMode: Text.WordWrap
+                                    // An engine error can carry an image digest, a word
+                                    // too long for the row, so it breaks anywhere.
+                                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                                    maximumLineCount: 4
+                                    elide: Text.ElideRight
                                     font.pixelSize: 12
                                     color: entry.row.state === "failed" ? root.danger
                                          : ["stopped", "offer"].indexOf(entry.row.state) >= 0 && !entry.row.fits ? root.warning : root.muted

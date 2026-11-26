@@ -116,7 +116,6 @@
   "Pick something to make first": "Valitse ensin, mitä teet",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "alle minuutti jäljellä",
   "Download": "Lataus",
   "Ready": "Valmis",
   "Try again": "Yritä uudelleen",
@@ -157,5 +156,6 @@
   "Update": "Päivitä",
   "Updating…": "Päivitetään…",
   "Use": "Käytä",
-  "Remove %1 and free about %2?": "Poistetaanko %1 ja vapautetaanko noin %2?"
+  "Remove %1 and free about %2?": "Poistetaanko %1 ja vapautetaanko noin %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Internetiin ei saatu yhteyttä. Tarkista yhteys ja yritä uudelleen."
 }

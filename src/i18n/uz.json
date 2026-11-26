@@ -116,7 +116,6 @@
   "Pick something to make first": "Avval nima yaratishni tanlang",
   "%1 of %2": "%1 / %2",
   "%1/s": "%1/s",
-  "less than a minute left": "bir daqiqadan kam qoldi",
   "Download": "Yuklab olish",
   "Ready": "Tayyor",
   "Try again": "Qayta urinish",
@@ -157,5 +156,6 @@
   "Update": "Yangilash",
   "Updating…": "Yangilanmoqda…",
   "Use": "Ishlatish",
-  "Remove %1 and free about %2?": "%1 o‘chirilib, taxminan %2 bo‘shatilsinmi?"
+  "Remove %1 and free about %2?": "%1 o‘chirilib, taxminan %2 bo‘shatilsinmi?",
+  "Couldn't reach the internet. Check the connection and try again.": "Internetga ulanib bo‘lmadi. Ulanishni tekshirib, qayta urinib ko‘ring."
 }

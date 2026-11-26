@@ -116,7 +116,6 @@
   "Pick something to make first": "Pirmiausia pasirinkite, ką kurti",
   "%1 of %2": "%1 iš %2",
   "%1/s": "%1/s",
-  "less than a minute left": "liko mažiau nei minutė",
   "Download": "Atsisiuntimas",
   "Ready": "Paruošta",
   "Try again": "Bandyti dar kartą",
@@ -158,5 +157,6 @@
   "Update": "Atnaujinti",
   "Updating…": "Atnaujinama…",
   "Use": "Naudoti",
-  "Remove %1 and free about %2?": "Pašalinti %1 ir atlaisvinti apie %2?"
+  "Remove %1 and free about %2?": "Pašalinti %1 ir atlaisvinti apie %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Nepavyko prisijungti prie interneto. Patikrinkite ryšį ir bandykite dar kartą."
 }

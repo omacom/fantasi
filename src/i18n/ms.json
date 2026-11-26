@@ -116,7 +116,6 @@
   "Pick something to make first": "Pilih apa yang hendak dihasilkan dahulu",
   "%1 of %2": "%1 daripada %2",
   "%1/s": "%1/s",
-  "less than a minute left": "kurang daripada seminit lagi",
   "Download": "Muat turun",
   "Ready": "Sedia",
   "Try again": "Cuba lagi",
@@ -156,5 +155,6 @@
   "Update": "Kemas kini",
   "Updating…": "Mengemas kini…",
   "Use": "Guna",
-  "Remove %1 and free about %2?": "Buang %1 dan bebaskan kira-kira %2?"
+  "Remove %1 and free about %2?": "Buang %1 dan bebaskan kira-kira %2?",
+  "Couldn't reach the internet. Check the connection and try again.": "Tidak dapat mencapai internet. Semak sambungan dan cuba lagi."
 }
